@@ -39,7 +39,7 @@ public:
         position_.h = image_ptr_->h;
     };
     ~animal() {
-        delete image_ptr_;
+        SDL_FreeSurface(image_ptr_);
     };
 
     void draw() {
@@ -53,8 +53,8 @@ public:
 // Insert here:
 // class sheep, derived from animal
 class sheep : public animal {
-    // todo
-    // Ctor
+public :
+    sheep(SDL_Surface* window_surface_ptr) : animal("./media/sheep.png", window_surface_ptr) {}
     // Dtor
     // implement functions that are purely virtual in base class
 };
@@ -71,14 +71,25 @@ private:
     // Attention, NON-OWNING ptr, again to the screen
     SDL_Surface* window_surface_ptr_;
 
-    // Some attribute to store all the wolves and sheep
-    // here
+    std::vector<animal*>* animals_;
 
 public:
-    ground(SDL_Surface* window_surface_ptr); // todo: Ctor
-    ~ground() {}; // todo: Dtor, again for clean up (if necessary)
-    void add_animal(animal* newAnimal); // todo: Add an animal
-    void update(); // todo: "refresh the screen": Move animals and draw them
+    ground(SDL_Surface* window_surface_ptr) {
+        window_surface_ptr_ = window_surface_ptr;
+        animals_ = new std::vector<animal*>();
+    }// todo: Ctor
+    ~ground() {
+        delete animals_;
+    }; // todo: Dtor, again for clean up (if necessary)
+    void add_animal(animal* newAnimal) {
+        animals_->push_back(newAnimal);
+    } // todo: Add an animal
+    void update() {
+        for (int i = 0; i < animals_->size() ; i++)
+        {
+            animals_->at(i)->draw();
+        }
+    } // todo: "refresh the screen": Move animals and draw them
     // Possibly other methods, depends on your implementation
 };
 
@@ -90,8 +101,7 @@ private:
     SDL_Surface* window_surface_ptr_;
     SDL_Event window_event_;
 
-    // Other attributes here, for example an instance of ground
-
+    ground* ground_;
 public:
     application(unsigned n_sheep, unsigned n_wolf){
       // Create an application window with the following settings:
@@ -101,17 +111,39 @@ public:
           SDL_WINDOWPOS_UNDEFINED,           // initial y position
           frame_width,                               // width, in pixels
           frame_height,                               // height, in pixels
-          SDL_WINDOW_OPENGL                  // flags - see below
+          SDL_WINDOW_SHOWN // flags - see below
       );
 
-      SDL_Delay(3000);  // Pause execution for 3000 milliseconds, for example
-      // Close and destroy the window
-      SDL_DestroyWindow(window_ptr_);
+      window_surface_ptr_ = SDL_GetWindowSurface(window_ptr_);
 
+      ground_ = new ground(window_surface_ptr_);
+
+      for (size_t i = 0; i < n_sheep; i++)
+      {
+          ground_->add_animal(new sheep(window_surface_ptr_));
+      }
+
+      for (size_t i = 0; i < n_wolf; i++)
+      {
+          //ground_->add_animal(new sheep(window_surface_ptr_));
+      }
     }
-    ~application();
+    ~application() {
+        // Close and destroy the window
+        SDL_DestroyWindow(window_ptr_);
+    }
 
-    int loop(unsigned period); // main loop of the application.
+    int loop(unsigned period) {
+        SDL_Rect windowsRect = SDL_Rect{ 0,0,frame_width, frame_height };
+        SDL_FillRect(window_surface_ptr_, &windowsRect, SDL_MapRGB(window_surface_ptr_->format, 0, 255, 0));
+        while (period*1000 >= SDL_GetTicks()) {
+            SDL_PollEvent(&window_event_);
+            ground_->update();
+            SDL_UpdateWindowSurface(window_ptr_);
+            SDL_Delay(frame_time*1000);  // Pause execution for framerate milliseconds
+        }
+        return 1;
+    }// main loop of the application.
                                // this ensures that the screen is updated
                                // at the correct rate.
                                // See SDL_GetTicks() and SDL_Delay() to enforce a
