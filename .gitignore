@@ -30,3 +30,7 @@
 *.exe
 *.out
 *.app
+/.vs/ProjetEpitaSDL/v16/Browse.VC.db
+/.vs/ProjetEpitaSDL/v16/Browse.VC.db-shm
+/.vs/ProjetEpitaSDL/v16/Browse.VC.db-wal
+/.vs/ProjetEpitaSDL/v16/Browse.VC.opendb
