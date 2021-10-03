@@ -1,4 +1,4 @@
-// SDL_Test.h: Includedatei für Include-Standardsystemdateien
+// SDL_Test.h: Includedatei fï¿½r Include-Standardsystemdateien
 // oder projektspezifische Includedateien.
 
 #pragma once
@@ -8,7 +8,6 @@
 #include <iostream>
 #include <map>
 #include <memory>
-#include <optional>
 #include <vector>
 
 // Defintions
@@ -41,7 +40,7 @@ public:
     };
     ~animal() {
         delete image_ptr_;
-    }; 
+    };
 
     void draw() {
         SDL_BlitScaled(image_ptr_, NULL, window_surface_ptr_, &position_);
@@ -94,8 +93,23 @@ private:
     // Other attributes here, for example an instance of ground
 
 public:
-    application(unsigned n_sheep, unsigned n_wolf); // Ctor
-    ~application();                                 // dtor
+    application(unsigned n_sheep, unsigned n_wolf){
+      // Create an application window with the following settings:
+      window_ptr_ = SDL_CreateWindow(
+          "An SDL2 window",                  // window title
+          SDL_WINDOWPOS_UNDEFINED,           // initial x position
+          SDL_WINDOWPOS_UNDEFINED,           // initial y position
+          frame_width,                               // width, in pixels
+          frame_height,                               // height, in pixels
+          SDL_WINDOW_OPENGL                  // flags - see below
+      );
+
+      SDL_Delay(3000);  // Pause execution for 3000 milliseconds, for example
+      // Close and destroy the window
+      SDL_DestroyWindow(window_ptr_);
+
+    }
+    ~application();
 
     int loop(unsigned period); // main loop of the application.
                                // this ensures that the screen is updated
