@@ -14,14 +14,16 @@ int main(int argc, char* argv[]) {
     init();
 
     std::cout << "Done with initilization" << std::endl;
+    int retval;
+    {
+        application my_app(std::stoul(argv[1]), std::stoul(argv[2]));
 
-    application my_app(std::stoul(argv[1]), std::stoul(argv[2]));
+        std::cout << "Created window" << std::endl;
 
-    std::cout << "Created window" << std::endl;
+        retval = my_app.loop(std::stoul(argv[3]));
 
-    int retval = my_app.loop(std::stoul(argv[3]));
-
-    std::cout << "Exiting application with code " << retval << std::endl;
+        std::cout << "Exiting application with code " << retval << std::endl;
+    }
 
     SDL_Quit();
 
