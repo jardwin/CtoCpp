@@ -33,5 +33,6 @@ namespace {
 
         // Helper function to load a png for a specific surface
         // See SDL_ConvertSurface
+        return NULL;
     }
 } // namespace

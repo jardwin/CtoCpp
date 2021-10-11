@@ -23,6 +23,12 @@ constexpr unsigned frame_boundary = 100;
 // Helper function to initialize SDL
 void init();
 
+enum DIRECTION
+{
+	HORIZONTAL,
+	VERTICAL
+};
+
 class animal {
 private:
 	SDL_Surface* window_surface_ptr_; // ptr to the surface on which we want the
@@ -32,10 +38,63 @@ private:
 protected:
 	SDL_Rect position_;
 	int targetX, targetY;
-	int getRandom(int max) {
+	int getRandomSpawn(DIRECTION dir) {
 		std::random_device                  rand_dev;
 		std::mt19937                        generator(rand_dev());
-		std::uniform_int_distribution<int>  distr(frame_boundary, max);
+		if (dir == DIRECTION::HORIZONTAL)
+		{
+			std::uniform_int_distribution<int>  distr(frame_boundary, frame_width-frame_boundary);
+			return distr(generator);
+		}
+		else
+		{
+			std::uniform_int_distribution<int>  distr(frame_boundary, frame_height - frame_boundary);
+			return distr(generator);
+		}
+	}
+
+	int getRandomTarget(int bounding, DIRECTION dir) {
+		int min, max;
+		if (dir == DIRECTION::HORIZONTAL)
+		{
+			if (position_.x - bounding <= frame_boundary)
+			{
+				min = frame_boundary;
+			}
+			else
+			{
+				min = position_.x - bounding;
+			}
+
+			if (position_.x + bounding >= frame_width - frame_boundary) {
+				max = frame_width - frame_boundary;
+			}
+			else
+			{
+				max = position_.x + bounding;
+			}
+		}
+		else {
+			if (position_.y - bounding <= frame_boundary)
+			{
+				min = frame_boundary;
+			}
+			else
+			{
+				min = position_.y - bounding;
+			}
+
+			if (position_.y + bounding >= frame_height - frame_boundary) {
+				max = frame_height - frame_boundary;
+			}
+			else
+			{
+				max = position_.y + bounding;
+			}
+		}
+		std::random_device                  rand_dev;
+		std::mt19937                        generator(rand_dev());
+		std::uniform_int_distribution<int>  distr(min, max);
 		return distr(generator);
 	}
 public:
@@ -47,7 +106,7 @@ public:
 		position_.w = image_ptr_->w;
 		position_.h = image_ptr_->h;
 
-		targetX, targetY = 0;
+		targetX = 0, targetY = 0;
 	};
 	~animal() {
 		SDL_FreeSurface(image_ptr_);
@@ -66,10 +125,10 @@ public:
 class sheep : public animal {
 public:
 	sheep(SDL_Surface* window_surface_ptr) : animal("./media/sheep.png", window_surface_ptr) {
-		this->position_.x = getRandom(frame_width - frame_boundary);
-		this->position_.y = getRandom(frame_height - frame_boundary);
-		this->targetX = getRandom(frame_width - frame_boundary);
-		this->targetY = getRandom(frame_height - frame_boundary);
+		this->position_.x = getRandomSpawn(DIRECTION::HORIZONTAL);
+		this->position_.y = getRandomSpawn(DIRECTION::VERTICAL);
+		this->targetX = getRandomTarget(100,DIRECTION::HORIZONTAL);
+		this->targetY = getRandomTarget(100,DIRECTION::VERTICAL);
 	}
 	~sheep() {}
 	void move() {
@@ -87,8 +146,8 @@ public:
 		}
 		if (targetX == position_.x && targetY == position_.y)
 		{
-			this->targetX = getRandom(frame_width - frame_boundary);
-			this->targetY = getRandom(frame_height - frame_boundary);
+			this->targetX = getRandomTarget(100, DIRECTION::HORIZONTAL);
+			this->targetY = getRandomTarget(100,DIRECTION::VERTICAL);
 		}
 	}
 	// implement functions that are purely virtual in base class
@@ -99,11 +158,11 @@ public:
 class wolf : public animal {
 public:
 	wolf(SDL_Surface* window_surface_ptr) : animal("./media/wolf.png", window_surface_ptr) {
-		this->position_.x = getRandom(frame_width - frame_boundary);
-		this->position_.y = getRandom(frame_height - frame_boundary);
+		this->position_.x = getRandomSpawn(DIRECTION::HORIZONTAL);
+		this->position_.y = getRandomSpawn(DIRECTION::VERTICAL);
 
-		this->targetX = getRandom(frame_width - frame_boundary);
-		this->targetY = getRandom(frame_height - frame_boundary);
+		this->targetX = getRandomTarget(100, DIRECTION::HORIZONTAL);
+		this->targetY = getRandomTarget(100, DIRECTION::VERTICAL);
 	}
 	~wolf() {}
 	// implement functions that are purely virtual in base class
@@ -122,8 +181,8 @@ public:
 		}
 		if (targetX == position_.x && targetY == position_.y)
 		{
-			this->targetX = getRandom(frame_width - frame_boundary);
-			this->targetY = getRandom(frame_height - frame_boundary);
+			this->targetX = getRandomTarget(100, DIRECTION::HORIZONTAL);
+			this->targetY = getRandomTarget(100, DIRECTION::VERTICAL);
 		}
 	}
 };
@@ -214,3 +273,4 @@ public:
 							   // duration the application should terminate after
 							   // 'period' seconds
 };
+
