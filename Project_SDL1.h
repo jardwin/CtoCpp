@@ -194,6 +194,7 @@ public:
 	~application() {
 		// Close and destroy the window
 		SDL_DestroyWindow(window_ptr_);
+		delete ground_;
 	}
 
 	int loop(unsigned period) {
