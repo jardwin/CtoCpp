@@ -256,21 +256,12 @@ public:
 		delete ground_;
 	}
 
-	int loop(unsigned period) {
-		SDL_Rect windowsRect = SDL_Rect{ 0,0,frame_width, frame_height };
-		while (period * 1000 >= SDL_GetTicks()) {
-			SDL_FillRect(window_surface_ptr_, &windowsRect, SDL_MapRGB(window_surface_ptr_->format, 0, 255, 0));
-			SDL_PollEvent(&window_event_);
-			ground_->update();
-			SDL_UpdateWindowSurface(window_ptr_);
-			SDL_Delay(frame_time * 1000);  // Pause execution for framerate milliseconds
-		}
-		return 1;
-	}// main loop of the application.
-							   // this ensures that the screen is updated
-							   // at the correct rate.
-							   // See SDL_GetTicks() and SDL_Delay() to enforce a
-							   // duration the application should terminate after
-							   // 'period' seconds
+	// main loop of the application.
+	// this ensures that the screen is updated
+	// at the correct rate.
+	// See SDL_GetTicks() and SDL_Delay() to enforce a
+	// duration the application should terminate after
+	// 'period' seconds
+	int loop(unsigned period) {}
 };
 

@@ -1,4 +1,4 @@
-// SDL_Test.cpp: Definiert den Einstiegspunkt für die Anwendung.
+// SDL_Test.cpp: Definiert den Einstiegspunkt fï¿½r die Anwendung.
 //
 
 #include "Project_SDL1.h"
@@ -21,6 +21,18 @@ void init() {
         throw std::runtime_error("init(): SDL_image could not initialize! "
             "SDL_image Error: " +
             std::string(IMG_GetError()));
+}
+
+int loop(unsigned period) {
+		SDL_Rect windowsRect = SDL_Rect{ 0,0,frame_width, frame_height };
+		while (period * 1000 >= SDL_GetTicks()) {
+			SDL_FillRect(window_surface_ptr_, &windowsRect, SDL_MapRGB(window_surface_ptr_->format, 0, 255, 0));
+			SDL_PollEvent(&window_event_);
+			ground_->update();
+			SDL_UpdateWindowSurface(window_ptr_);
+			SDL_Delay(frame_time * 1000);  // Pause execution for framerate milliseconds
+		}
+		return 1;
 }
 
 namespace {
