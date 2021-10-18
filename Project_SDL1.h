@@ -38,85 +38,16 @@ private:
 protected:
 	SDL_Rect position_;
 	int targetX, targetY;
-	int getRandomSpawn(DIRECTION dir) {
-		std::random_device                  rand_dev;
-		std::mt19937                        generator(rand_dev());
-		if (dir == DIRECTION::HORIZONTAL)
-		{
-			std::uniform_int_distribution<int>  distr(frame_boundary, frame_width-frame_boundary);
-			return distr(generator);
-		}
-		else
-		{
-			std::uniform_int_distribution<int>  distr(frame_boundary, frame_height - frame_boundary);
-			return distr(generator);
-		}
-	}
-
-	int getRandomTarget(int bounding, DIRECTION dir) {
-		int min, max;
-		if (dir == DIRECTION::HORIZONTAL)
-		{
-			if (position_.x - bounding <= frame_boundary)
-			{
-				min = frame_boundary;
-			}
-			else
-			{
-				min = position_.x - bounding;
-			}
-
-			if (position_.x + bounding >= frame_width - frame_boundary) {
-				max = frame_width - frame_boundary;
-			}
-			else
-			{
-				max = position_.x + bounding;
-			}
-		}
-		else {
-			if (position_.y - bounding <= frame_boundary)
-			{
-				min = frame_boundary;
-			}
-			else
-			{
-				min = position_.y - bounding;
-			}
-
-			if (position_.y + bounding >= frame_height - frame_boundary) {
-				max = frame_height - frame_boundary;
-			}
-			else
-			{
-				max = position_.y + bounding;
-			}
-		}
-		std::random_device                  rand_dev;
-		std::mt19937                        generator(rand_dev());
-		std::uniform_int_distribution<int>  distr(min, max);
-		return distr(generator);
-	}
+	int getRandomSpawn(DIRECTION dir);
+	int getRandomTarget(int bounding, DIRECTION dir);
 public:
-	animal(const std::string& file_path, SDL_Surface* window_surface_ptr) {
-		image_ptr_ = IMG_Load(file_path.c_str());
-		window_surface_ptr_ = window_surface_ptr;
-		position_.x = 0;
-		position_.y = 0;
-		position_.w = image_ptr_->w;
-		position_.h = image_ptr_->h;
+	animal(const std::string& file_path, SDL_Surface* window_surface_ptr);
+	~animal();
 
-		targetX = 0, targetY = 0;
-	};
-	~animal() {
-		SDL_FreeSurface(image_ptr_);
-	};
+	void draw();
 
-	void draw() {
-		SDL_BlitScaled(image_ptr_, NULL, window_surface_ptr_, &position_);
-	};
-
-	virtual void move() {}; // todo: Animals move around, but in a different
+	virtual void move() =0;
+	// todo: Animals move around, but in a different
 							   // fashion depending on which type of animal
 };
 
@@ -124,32 +55,9 @@ public:
 // class sheep, derived from animal
 class sheep : public animal {
 public:
-	sheep(SDL_Surface* window_surface_ptr) : animal("./media/sheep.png", window_surface_ptr) {
-		this->position_.x = getRandomSpawn(DIRECTION::HORIZONTAL);
-		this->position_.y = getRandomSpawn(DIRECTION::VERTICAL);
-		this->targetX = getRandomTarget(100,DIRECTION::HORIZONTAL);
-		this->targetY = getRandomTarget(100,DIRECTION::VERTICAL);
-	}
+	sheep(SDL_Surface* window_surface_ptr);
 	~sheep() {}
-	void move() {
-		if (position_.x > targetX) {
-			position_.x--;
-		}
-		else if (position_.x < targetX) {
-			position_.x++;
-		}
-		if (position_.y > targetY) {
-			position_.y--;
-		}
-		else if (position_.y < targetY) {
-			position_.y++;
-		}
-		if (targetX == position_.x && targetY == position_.y)
-		{
-			this->targetX = getRandomTarget(100, DIRECTION::HORIZONTAL);
-			this->targetY = getRandomTarget(100,DIRECTION::VERTICAL);
-		}
-	}
+	void move();
 	// implement functions that are purely virtual in base class
 };
 
@@ -157,34 +65,11 @@ public:
 // class wolf, derived from animal
 class wolf : public animal {
 public:
-	wolf(SDL_Surface* window_surface_ptr) : animal("./media/wolf.png", window_surface_ptr) {
-		this->position_.x = getRandomSpawn(DIRECTION::HORIZONTAL);
-		this->position_.y = getRandomSpawn(DIRECTION::VERTICAL);
-
-		this->targetX = getRandomTarget(100, DIRECTION::HORIZONTAL);
-		this->targetY = getRandomTarget(100, DIRECTION::VERTICAL);
-	}
+	wolf(SDL_Surface* window_surface_ptr);
 	~wolf() {}
 	// implement functions that are purely virtual in base class
-	void move() {
-		if (position_.x > targetX) {
-			position_.x--;
-		}
-		else if (position_.x < targetX) {
-			position_.x++;
-		}
-		if (position_.y > targetY) {
-			position_.y--;
-		}
-		else if (position_.y < targetY) {
-			position_.y++;
-		}
-		if (targetX == position_.x && targetY == position_.y)
-		{
-			this->targetX = getRandomTarget(100, DIRECTION::HORIZONTAL);
-			this->targetY = getRandomTarget(100, DIRECTION::VERTICAL);
-		}
-	}
+	void move();
+
 };
 // Use only sheep at first. Once the application works
 // for sheep you can add the wolves
@@ -199,23 +84,15 @@ private:
 	std::vector<animal*>* animals_;
 
 public:
-	ground(SDL_Surface* window_surface_ptr) {
-		window_surface_ptr_ = window_surface_ptr;
-		animals_ = new std::vector<animal*>();
-	}// todo: Ctor
-	~ground() {
-		delete animals_;
-	}; // todo: Dtor, again for clean up (if necessary)
-	void add_animal(animal* newAnimal) {
-		animals_->push_back(newAnimal);
-	} // todo: Add an animal
-	void update() {
-		for (int i = 0; i < animals_->size(); i++)
-		{
-			animals_->at(i)->move();
-			animals_->at(i)->draw();
-		}
-	} // todo: "refresh the screen": Move animals and draw them
+	ground(SDL_Surface* window_surface_ptr);
+	~ground();
+
+	// Add an animal
+	void add_animal(animal* newAnimal);
+
+	// "refresh the screen": Move animals and draw them
+	void update();
+	// todo: "refresh the screen": Move animals and draw them
 	// Possibly other methods, depends on your implementation
 };
 
@@ -229,44 +106,11 @@ private:
 
 	ground* ground_;
 public:
-	application(unsigned n_sheep, unsigned n_wolf) {
-		// Create an application window with the following settings:
-		window_ptr_ = SDL_CreateWindow(
-			"An SDL2 window",                  // window title
-			SDL_WINDOWPOS_UNDEFINED,           // initial x position
-			SDL_WINDOWPOS_UNDEFINED,           // initial y position
-			frame_width,                               // width, in pixels
-			frame_height,                               // height, in pixels
-			SDL_WINDOW_SHOWN // flags - see below
-		);
+	application(unsigned n_sheep, unsigned n_wolf);
+	~application();
 
-		window_surface_ptr_ = SDL_GetWindowSurface(window_ptr_);
-
-		ground_ = new ground(window_surface_ptr_);
-
-		for (size_t i = 0; i < n_sheep; i++)
-			ground_->add_animal(new sheep(window_surface_ptr_));
-
-		for (size_t i = 0; i < n_wolf; i++)
-			ground_->add_animal(new wolf(window_surface_ptr_));
-	}
-	~application() {
-		// Close and destroy the window
-		SDL_DestroyWindow(window_ptr_);
-		delete ground_;
-	}
-
-	int loop(unsigned period) {
-		SDL_Rect windowsRect = SDL_Rect{ 0,0,frame_width, frame_height };
-		while (period * 1000 >= SDL_GetTicks()) {
-			SDL_FillRect(window_surface_ptr_, &windowsRect, SDL_MapRGB(window_surface_ptr_->format, 0, 255, 0));
-			SDL_PollEvent(&window_event_);
-			ground_->update();
-			SDL_UpdateWindowSurface(window_ptr_);
-			SDL_Delay(frame_time * 1000);  // Pause execution for framerate milliseconds
-		}
-		return 1;
-	}// main loop of the application.
+	int loop(unsigned period);
+	// main loop of the application.
 							   // this ensures that the screen is updated
 							   // at the correct rate.
 							   // See SDL_GetTicks() and SDL_Delay() to enforce a
