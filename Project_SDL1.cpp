@@ -177,10 +177,10 @@ void ground::add_animal(animal* newAnimal) {
 }
 
 void ground::update() {
-    for (int i = 0; i < animals_->size(); i++)
+    for (animal* ani : *animals_)
     {
-        animals_->at(i)->move();
-        animals_->at(i)->draw();
+        ani->move();
+        ani->draw();
     }
 }
 
