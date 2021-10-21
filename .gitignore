@@ -50,3 +50,10 @@
 /x64/Debug/ProjetEpitaSDL.vcxproj.FileListAbsolute.txt
 /x64/Debug/vc142.pdb
 /x64/Debug/vc142.idb
+/SDL2
+/SDL2_image
+/packages/sdl2.2.0.5
+/packages/sdl2.nuget.2.0.10
+/packages/sdl2.nuget.redist.2.0.10
+/packages/sdl2.redist.2.0.5
+/packages/sdl2_image.nuget.2.0.4
