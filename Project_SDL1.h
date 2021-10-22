@@ -81,14 +81,14 @@ private:
 	// Attention, NON-OWNING ptr, again to the screen
 	SDL_Surface* window_surface_ptr_;
 
-	std::vector<animal*>* animals_;
+	std::vector<std::shared_ptr<animal>> animals_;
 
 public:
 	ground(SDL_Surface* window_surface_ptr);
 	~ground();
 
 	// Add an animal
-	void add_animal(animal* newAnimal);
+	void add_animal(std::shared_ptr<animal> newAnimal);
 
 	// "refresh the screen": Move animals and draw them
 	void update();
@@ -104,7 +104,7 @@ private:
 	SDL_Surface* window_surface_ptr_;
 	SDL_Event window_event_;
 
-	ground* ground_;
+	std::unique_ptr<ground> ground_;
 public:
 	application(unsigned n_sheep, unsigned n_wolf);
 	~application();

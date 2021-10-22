@@ -165,19 +165,18 @@ void wolf::move() {
 
 ground::ground(SDL_Surface* window_surface_ptr) {
     window_surface_ptr_ = window_surface_ptr;
-    animals_ = new std::vector<animal*>();
+    animals_ = std::vector<std::shared_ptr<animal>>();
 }
 
 ground::~ground() {
-    delete animals_;
 };
 
-void ground::add_animal(animal* newAnimal) {
-    animals_->push_back(newAnimal);
+void ground::add_animal(std::shared_ptr<animal> newAnimal) {
+    animals_.push_back(newAnimal);
 }
 
 void ground::update() {
-    for (animal* ani : *animals_)
+    for (std::shared_ptr<animal> ani : animals_)
     {
         ani->move();
         ani->draw();
@@ -199,19 +198,18 @@ application::application(unsigned n_sheep, unsigned n_wolf) {
 
     window_surface_ptr_ = SDL_GetWindowSurface(window_ptr_);
 
-    ground_ = new ground(window_surface_ptr_);
+    ground_ = std::make_unique<ground>(window_surface_ptr_);
 
     for (size_t i = 0; i < n_sheep; i++)
-        ground_->add_animal(new sheep(window_surface_ptr_));
+        ground_->add_animal(std::make_shared<sheep>(window_surface_ptr_));
 
     for (size_t i = 0; i < n_wolf; i++)
-        ground_->add_animal(new wolf(window_surface_ptr_));
+        ground_->add_animal(std::make_shared<wolf>(window_surface_ptr_));
 }
 
 application::~application() {
     // Close and destroy the window
     SDL_DestroyWindow(window_ptr_);
-    delete ground_;
 }
 
 int application::loop(unsigned period) {
