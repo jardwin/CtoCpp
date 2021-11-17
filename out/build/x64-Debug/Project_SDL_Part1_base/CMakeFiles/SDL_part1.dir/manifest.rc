@@ -1,0 +1,2 @@
+#pragma code_page(65001)
+1 /* CREATEPROCESS_MANIFEST_RESOURCE_ID */ 24 /* RT_MANIFEST */ "I:/source/repos/CtoCpp/out/build/x64-Debug/Project_SDL_Part1_base/CMakeFiles/SDL_part1.dir/embed.manifest"

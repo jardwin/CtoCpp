@@ -1,0 +1,7 @@
+# ninja log v5
+1	833	6588602305752642	Project_SDL_Part1_base/CMakeFiles/SDL_part1.dir/Project_SDL1.cpp.obj	7f88e7950d241094
+7	683	6588588677465484	Project_SDL_Part1_base/CMakeFiles/SDL_part1.dir/main.cpp.obj	3eaca6c0987fc82e
+834	1225	6588602308402523	Project_SDL_Part1_base/SDL_part1.exe	aa7b29dae14ff506
+0	10	0	clean	edb6a7293fe66ae
+1	706	6588603446012544	Project_SDL_Part1_base/CMakeFiles/SDL_part1.dir/Project_SDL1.cpp.obj	7f88e7950d241094
+706	1022	6588603448112442	Project_SDL_Part1_base/SDL_part1.exe	aa7b29dae14ff506
