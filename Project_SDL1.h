@@ -20,6 +20,8 @@ constexpr unsigned frame_height = 900/2; // Height of window in pixel
 // of the screen
 constexpr unsigned frame_boundary = 100;
 
+constexpr unsigned max_growing = 100;
+
 // Helper function to initialize SDL
 void init();
 
@@ -33,20 +35,25 @@ class animal {
 private:
 	SDL_Surface* window_surface_ptr_; // ptr to the surface on which we want the
 									  // animal to be drawn, also non-owning
+protected:	
 	SDL_Surface* image_ptr_; // The texture of the sheep (the loaded image), use
 							 // load_surface_for
-protected:
-	SDL_Rect position_;
+	int speed;
 	int targetX, targetY;
 	int getRandomSpawn(DIRECTION dir);
 	int getRandomTarget(int bounding, DIRECTION dir);
+	int getRandomSex();
+	bool isOnTarget();
 public:
+	int growingPerPourcent;
+	SDL_Rect position_;
 	animal(const std::string& file_path, SDL_Surface* window_surface_ptr);
 	~animal();
 
 	void draw();
 
 	virtual void move() =0;
+	virtual void update();
 	// todo: Animals move around, but in a different
 							   // fashion depending on which type of animal
 };
@@ -54,9 +61,15 @@ public:
 // Insert here:
 // class sheep, derived from animal
 class sheep : public animal {
+private:
+	unsigned birthday;
+	void growingUp();
 public:
+	bool isFemal;
 	sheep(SDL_Surface* window_surface_ptr);
 	~sheep() {}
+	void isChild();
+	void update();
 	void move();
 	// implement functions that are purely virtual in base class
 };
@@ -89,6 +102,8 @@ public:
 
 	// Add an animal
 	void add_animal(std::shared_ptr<animal> newAnimal);
+
+	void appendOffspring(sheep& first, sheep& second);
 
 	// "refresh the screen": Move animals and draw them
 	void update();

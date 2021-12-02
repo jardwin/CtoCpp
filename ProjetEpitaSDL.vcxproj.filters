@@ -34,6 +34,15 @@
     <Image Include="media\wolf.png">
       <Filter>Fichiers de ressources</Filter>
     </Image>
+    <Image Include="media\sheep25.png">
+      <Filter>Fichiers de ressources</Filter>
+    </Image>
+    <Image Include="media\sheep50.png">
+      <Filter>Fichiers de ressources</Filter>
+    </Image>
+    <Image Include="media\sheep75.png">
+      <Filter>Fichiers de ressources</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

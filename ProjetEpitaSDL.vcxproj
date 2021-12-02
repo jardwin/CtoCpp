@@ -151,6 +151,9 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="media\sheep.png" />
+    <Image Include="media\sheep25.png" />
+    <Image Include="media\sheep50.png" />
+    <Image Include="media\sheep75.png" />
     <Image Include="media\wolf.png" />
   </ItemGroup>
   <ItemGroup>
