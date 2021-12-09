@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Prerequisites
 *.d
 
@@ -57,3 +58,9 @@
 /packages/sdl2.nuget.redist.2.0.10
 /packages/sdl2.redist.2.0.5
 /packages/sdl2_image.nuget.2.0.4
+=======
+Project_SDL_Part1_base/SDL2
+Project_SDL_Part1_base/SDL2_image
+.vs
+out
+>>>>>>> mvo/without-dot-sln

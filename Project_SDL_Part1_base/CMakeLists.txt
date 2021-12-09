@@ -1,9 +1,5 @@
 ﻿cmake_minimum_required (VERSION 3.0)
-
-<<<<<<< HEAD
-project ("ProjetEpitaSDL")
-
-set (CMAKE_CXX_STANDARD 17)
+project ("Project_SDL_sub")
 
 IF(WIN32)
   message(STATUS "Building for windows")
@@ -26,8 +22,8 @@ IF(WIN32)
   include_directories(${SDL2IMAGE_INCLUDE_DIRS})
   link_directories(${SDL2_LINK_DIRS}, ${SDL2IMAGE_LINK_DIRS})
 
-  add_executable(ProjetEpitaSDL ProjetEpitaSDL.cpp Project_SDL1.cpp)
-  target_link_libraries(ProjetEpitaSDL PUBLIC SDL2 SDL2main SDL2_image)
+  add_executable(SDL_part1 main.cpp Project_SDL1.cpp)
+  target_link_libraries(SDL_part1 PUBLIC SDL2 SDL2main SDL2_image)
 ELSE()
   message(STATUS "Building for Linux or Mac")
 
@@ -36,14 +32,8 @@ ELSE()
   include_directories(${SDL2_INCLUDE_DIRS})
   include_directories(${SDL2_IMAGE_INCLUDE_DIRS})
 
-  add_executable(ProjetEpitaSDL ProjetEpitaSDL.cpp Project_SDL1.cpp)
-  target_link_libraries(ProjetEpitaSDL ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES})
+  add_executable(SDL_part1 main.cpp Project_SDL1.cpp)
+  target_link_libraries(SDL_part1 ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES})
 ENDIF()
-=======
-project ("Project_SDL1")
 
-set (CMAKE_CXX_STANDARD 17)
-
-# Schließen Sie Unterprojekte ein.
-add_subdirectory ("Project_SDL_Part1_base")
->>>>>>> mvo/without-dot-sln
+file(COPY "media" DESTINATION ${CMAKE_BINARY_DIR})
