@@ -38,14 +38,6 @@ vector
 random
 -
 
-/home/user/CtoCpp/Project_SDL_Part1_base/main.cpp
-Project_SDL1.h
-/home/user/CtoCpp/Project_SDL_Part1_base/Project_SDL1.h
-iostream
--
-string
--
-
 /usr/include/SDL2/SDL.h
 SDL_main.h
 /usr/include/SDL2/SDL_main.h

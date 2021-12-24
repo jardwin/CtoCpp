@@ -50,6 +50,7 @@ public:
 	animal(const std::string& file_path, SDL_Surface* window_surface_ptr);
 	~animal();
 
+	bool isOnCouple(const animal&);
 	void draw();
 
 	virtual void move() =0;

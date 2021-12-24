@@ -1,4 +1,4 @@
-// SDL_Test.cpp: Definiert den Einstiegspunkt für die Anwendung.
+// SDL_Test.cpp: Definiert den Einstiegspunkt fï¿½r die Anwendung.
 //
 
 #include "Project_SDL1.h"
@@ -91,18 +91,23 @@ int animal::getRandomTarget(int bounding, DIRECTION dir) {
 }
 
 bool animal::isOnTarget() {
-	return
-		(targetX + speed == position_.x
-			||
-			targetX - speed == position_.x
-			||
-			targetX == position_.x)
-		&&
-		(targetY + speed == position_.y
-			||
-			targetY - speed == position_.y
-			||
-			targetY == position_.y);
+	float distance = sqrt(pow(targetX - position_.x, 2) +
+                pow(targetY - position_.y, 2) * 1.0);
+	if(distance == speed || distance == 0){
+		return true;
+	}else{
+		return false;
+	}
+}
+
+bool animal::isOnCouple(const animal& secondeAni){
+	float distance = sqrt(pow(secondeAni.position_.x - this->position_.x, 2) +
+                pow(secondeAni.position_.y - this->position_.y, 2) * 1.0);
+	if(distance >= (secondeAni.position_.w / 2) && distance <= 0){
+		return true;
+	}else{
+		return false;
+	}
 }
 
 animal::animal(const std::string& file_path, SDL_Surface* window_surface_ptr) {
@@ -145,8 +150,9 @@ void sheep::growingUp() {
 	if (interval % 4 == 0) {
 		this->growingPerPourcent++;
 	}
-
 }
+
+
 void sheep::move() {
 	if (position_.x > targetX) {
 		position_.x--;
@@ -255,7 +261,7 @@ void ground::add_animal(std::shared_ptr<animal> newAnimal) {
 }
 
 void ground::appendOffspring(sheep& first, sheep& second) {
-	if (true || first.isFemal && !second.isFemal) {
+	if ((first.isFemal && !second.isFemal) || (!first.isFemal && second.isFemal)) {
 		auto child = std::make_shared<sheep>(this->window_surface_ptr_);
 		child->isChild();
 		child->position_.x = first.position_.x;
@@ -280,21 +286,9 @@ void ground::update() {
 			if (
 				(ani.growingPerPourcent == max_growing && secondeAni.growingPerPourcent == max_growing)
 				&&
-				(typeid(ani) == typeid(sheep) && typeid(ani) == typeid(secondeAni))
+				(typeid(ani) == typeid(sheep) && typeid(secondeAni) == typeid(sheep))
 				&&
-				(
-					(
-						(ani.position_.x >= secondeAni.position_.x && ani.position_.x <= secondeAni.position_.x + (secondeAni.position_.w / 2))
-						&&
-						(ani.position_.y >= secondeAni.position_.y && ani.position_.y <= secondeAni.position_.y + (secondeAni.position_.h / 2))
-						)
-					||
-					(
-						(secondeAni.position_.x >= ani.position_.x && secondeAni.position_.x <= ani.position_.x + (ani.position_.w / 2))
-						&&
-						(secondeAni.position_.y >= ani.position_.y && secondeAni.position_.y <= ani.position_.y + (ani.position_.h / 2))
-						)
-					)
+					ani.isOnCouple(secondeAni)
 				) {
 				appendOffspring((sheep&)ani, (sheep&)secondeAni);
 			}
