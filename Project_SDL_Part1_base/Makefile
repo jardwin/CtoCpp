@@ -48,10 +48,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/merlin/CtoCpp
+CMAKE_SOURCE_DIR = /home/user/CtoCpp
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/merlin/CtoCpp
+CMAKE_BINARY_DIR = /home/user/CtoCpp
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -80,14 +80,14 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	cd /home/merlin/CtoCpp && $(CMAKE_COMMAND) -E cmake_progress_start /home/merlin/CtoCpp/CMakeFiles /home/merlin/CtoCpp/Project_SDL_Part1_base/CMakeFiles/progress.marks
-	cd /home/merlin/CtoCpp && $(MAKE) -f CMakeFiles/Makefile2 Project_SDL_Part1_base/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/merlin/CtoCpp/CMakeFiles 0
+	cd /home/user/CtoCpp && $(CMAKE_COMMAND) -E cmake_progress_start /home/user/CtoCpp/CMakeFiles /home/user/CtoCpp/Project_SDL_Part1_base/CMakeFiles/progress.marks
+	cd /home/user/CtoCpp && $(MAKE) -f CMakeFiles/Makefile2 Project_SDL_Part1_base/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/user/CtoCpp/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /home/merlin/CtoCpp && $(MAKE) -f CMakeFiles/Makefile2 Project_SDL_Part1_base/clean
+	cd /home/user/CtoCpp && $(MAKE) -f CMakeFiles/Makefile2 Project_SDL_Part1_base/clean
 .PHONY : clean
 
 # The main clean target
@@ -97,22 +97,22 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /home/merlin/CtoCpp && $(MAKE) -f CMakeFiles/Makefile2 Project_SDL_Part1_base/preinstall
+	cd /home/user/CtoCpp && $(MAKE) -f CMakeFiles/Makefile2 Project_SDL_Part1_base/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /home/merlin/CtoCpp && $(MAKE) -f CMakeFiles/Makefile2 Project_SDL_Part1_base/preinstall
+	cd /home/user/CtoCpp && $(MAKE) -f CMakeFiles/Makefile2 Project_SDL_Part1_base/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	cd /home/merlin/CtoCpp && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	cd /home/user/CtoCpp && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
 # Convenience name for target.
 Project_SDL_Part1_base/CMakeFiles/SDL_part1.dir/rule:
-	cd /home/merlin/CtoCpp && $(MAKE) -f CMakeFiles/Makefile2 Project_SDL_Part1_base/CMakeFiles/SDL_part1.dir/rule
+	cd /home/user/CtoCpp && $(MAKE) -f CMakeFiles/Makefile2 Project_SDL_Part1_base/CMakeFiles/SDL_part1.dir/rule
 .PHONY : Project_SDL_Part1_base/CMakeFiles/SDL_part1.dir/rule
 
 # Convenience name for target.
@@ -122,7 +122,7 @@ SDL_part1: Project_SDL_Part1_base/CMakeFiles/SDL_part1.dir/rule
 
 # fast build rule for target.
 SDL_part1/fast:
-	cd /home/merlin/CtoCpp && $(MAKE) -f Project_SDL_Part1_base/CMakeFiles/SDL_part1.dir/build.make Project_SDL_Part1_base/CMakeFiles/SDL_part1.dir/build
+	cd /home/user/CtoCpp && $(MAKE) -f Project_SDL_Part1_base/CMakeFiles/SDL_part1.dir/build.make Project_SDL_Part1_base/CMakeFiles/SDL_part1.dir/build
 .PHONY : SDL_part1/fast
 
 Project_SDL1.o: Project_SDL1.cpp.o
@@ -131,7 +131,7 @@ Project_SDL1.o: Project_SDL1.cpp.o
 
 # target to build an object file
 Project_SDL1.cpp.o:
-	cd /home/merlin/CtoCpp && $(MAKE) -f Project_SDL_Part1_base/CMakeFiles/SDL_part1.dir/build.make Project_SDL_Part1_base/CMakeFiles/SDL_part1.dir/Project_SDL1.cpp.o
+	cd /home/user/CtoCpp && $(MAKE) -f Project_SDL_Part1_base/CMakeFiles/SDL_part1.dir/build.make Project_SDL_Part1_base/CMakeFiles/SDL_part1.dir/Project_SDL1.cpp.o
 .PHONY : Project_SDL1.cpp.o
 
 Project_SDL1.i: Project_SDL1.cpp.i
@@ -140,7 +140,7 @@ Project_SDL1.i: Project_SDL1.cpp.i
 
 # target to preprocess a source file
 Project_SDL1.cpp.i:
-	cd /home/merlin/CtoCpp && $(MAKE) -f Project_SDL_Part1_base/CMakeFiles/SDL_part1.dir/build.make Project_SDL_Part1_base/CMakeFiles/SDL_part1.dir/Project_SDL1.cpp.i
+	cd /home/user/CtoCpp && $(MAKE) -f Project_SDL_Part1_base/CMakeFiles/SDL_part1.dir/build.make Project_SDL_Part1_base/CMakeFiles/SDL_part1.dir/Project_SDL1.cpp.i
 .PHONY : Project_SDL1.cpp.i
 
 Project_SDL1.s: Project_SDL1.cpp.s
@@ -149,7 +149,7 @@ Project_SDL1.s: Project_SDL1.cpp.s
 
 # target to generate assembly for a file
 Project_SDL1.cpp.s:
-	cd /home/merlin/CtoCpp && $(MAKE) -f Project_SDL_Part1_base/CMakeFiles/SDL_part1.dir/build.make Project_SDL_Part1_base/CMakeFiles/SDL_part1.dir/Project_SDL1.cpp.s
+	cd /home/user/CtoCpp && $(MAKE) -f Project_SDL_Part1_base/CMakeFiles/SDL_part1.dir/build.make Project_SDL_Part1_base/CMakeFiles/SDL_part1.dir/Project_SDL1.cpp.s
 .PHONY : Project_SDL1.cpp.s
 
 main.o: main.cpp.o
@@ -158,7 +158,7 @@ main.o: main.cpp.o
 
 # target to build an object file
 main.cpp.o:
-	cd /home/merlin/CtoCpp && $(MAKE) -f Project_SDL_Part1_base/CMakeFiles/SDL_part1.dir/build.make Project_SDL_Part1_base/CMakeFiles/SDL_part1.dir/main.cpp.o
+	cd /home/user/CtoCpp && $(MAKE) -f Project_SDL_Part1_base/CMakeFiles/SDL_part1.dir/build.make Project_SDL_Part1_base/CMakeFiles/SDL_part1.dir/main.cpp.o
 .PHONY : main.cpp.o
 
 main.i: main.cpp.i
@@ -167,7 +167,7 @@ main.i: main.cpp.i
 
 # target to preprocess a source file
 main.cpp.i:
-	cd /home/merlin/CtoCpp && $(MAKE) -f Project_SDL_Part1_base/CMakeFiles/SDL_part1.dir/build.make Project_SDL_Part1_base/CMakeFiles/SDL_part1.dir/main.cpp.i
+	cd /home/user/CtoCpp && $(MAKE) -f Project_SDL_Part1_base/CMakeFiles/SDL_part1.dir/build.make Project_SDL_Part1_base/CMakeFiles/SDL_part1.dir/main.cpp.i
 .PHONY : main.cpp.i
 
 main.s: main.cpp.s
@@ -176,7 +176,7 @@ main.s: main.cpp.s
 
 # target to generate assembly for a file
 main.cpp.s:
-	cd /home/merlin/CtoCpp && $(MAKE) -f Project_SDL_Part1_base/CMakeFiles/SDL_part1.dir/build.make Project_SDL_Part1_base/CMakeFiles/SDL_part1.dir/main.cpp.s
+	cd /home/user/CtoCpp && $(MAKE) -f Project_SDL_Part1_base/CMakeFiles/SDL_part1.dir/build.make Project_SDL_Part1_base/CMakeFiles/SDL_part1.dir/main.cpp.s
 .PHONY : main.cpp.s
 
 # Help Target
@@ -205,6 +205,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /home/merlin/CtoCpp && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /home/user/CtoCpp && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 

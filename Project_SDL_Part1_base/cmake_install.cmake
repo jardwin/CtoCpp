@@ -1,4 +1,4 @@
-# Install script for directory: /home/merlin/CtoCpp/Project_SDL_Part1_base
+# Install script for directory: /home/user/CtoCpp/Project_SDL_Part1_base
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

@@ -43,10 +43,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/merlin/CtoCpp
+CMAKE_SOURCE_DIR = /home/user/CtoCpp
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/merlin/CtoCpp
+CMAKE_BINARY_DIR = /home/user/CtoCpp
 
 # Include any dependencies generated for this target.
 include Project_SDL_Part1_base/CMakeFiles/SDL_part1.dir/depend.make
@@ -59,29 +59,29 @@ include Project_SDL_Part1_base/CMakeFiles/SDL_part1.dir/flags.make
 
 Project_SDL_Part1_base/CMakeFiles/SDL_part1.dir/main.cpp.o: Project_SDL_Part1_base/CMakeFiles/SDL_part1.dir/flags.make
 Project_SDL_Part1_base/CMakeFiles/SDL_part1.dir/main.cpp.o: Project_SDL_Part1_base/main.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/merlin/CtoCpp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object Project_SDL_Part1_base/CMakeFiles/SDL_part1.dir/main.cpp.o"
-	cd /home/merlin/CtoCpp/Project_SDL_Part1_base && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/SDL_part1.dir/main.cpp.o -c /home/merlin/CtoCpp/Project_SDL_Part1_base/main.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/user/CtoCpp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object Project_SDL_Part1_base/CMakeFiles/SDL_part1.dir/main.cpp.o"
+	cd /home/user/CtoCpp/Project_SDL_Part1_base && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/SDL_part1.dir/main.cpp.o -c /home/user/CtoCpp/Project_SDL_Part1_base/main.cpp
 
 Project_SDL_Part1_base/CMakeFiles/SDL_part1.dir/main.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/SDL_part1.dir/main.cpp.i"
-	cd /home/merlin/CtoCpp/Project_SDL_Part1_base && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/merlin/CtoCpp/Project_SDL_Part1_base/main.cpp > CMakeFiles/SDL_part1.dir/main.cpp.i
+	cd /home/user/CtoCpp/Project_SDL_Part1_base && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/user/CtoCpp/Project_SDL_Part1_base/main.cpp > CMakeFiles/SDL_part1.dir/main.cpp.i
 
 Project_SDL_Part1_base/CMakeFiles/SDL_part1.dir/main.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/SDL_part1.dir/main.cpp.s"
-	cd /home/merlin/CtoCpp/Project_SDL_Part1_base && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/merlin/CtoCpp/Project_SDL_Part1_base/main.cpp -o CMakeFiles/SDL_part1.dir/main.cpp.s
+	cd /home/user/CtoCpp/Project_SDL_Part1_base && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/user/CtoCpp/Project_SDL_Part1_base/main.cpp -o CMakeFiles/SDL_part1.dir/main.cpp.s
 
 Project_SDL_Part1_base/CMakeFiles/SDL_part1.dir/Project_SDL1.cpp.o: Project_SDL_Part1_base/CMakeFiles/SDL_part1.dir/flags.make
 Project_SDL_Part1_base/CMakeFiles/SDL_part1.dir/Project_SDL1.cpp.o: Project_SDL_Part1_base/Project_SDL1.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/merlin/CtoCpp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object Project_SDL_Part1_base/CMakeFiles/SDL_part1.dir/Project_SDL1.cpp.o"
-	cd /home/merlin/CtoCpp/Project_SDL_Part1_base && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/SDL_part1.dir/Project_SDL1.cpp.o -c /home/merlin/CtoCpp/Project_SDL_Part1_base/Project_SDL1.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/user/CtoCpp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object Project_SDL_Part1_base/CMakeFiles/SDL_part1.dir/Project_SDL1.cpp.o"
+	cd /home/user/CtoCpp/Project_SDL_Part1_base && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/SDL_part1.dir/Project_SDL1.cpp.o -c /home/user/CtoCpp/Project_SDL_Part1_base/Project_SDL1.cpp
 
 Project_SDL_Part1_base/CMakeFiles/SDL_part1.dir/Project_SDL1.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/SDL_part1.dir/Project_SDL1.cpp.i"
-	cd /home/merlin/CtoCpp/Project_SDL_Part1_base && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/merlin/CtoCpp/Project_SDL_Part1_base/Project_SDL1.cpp > CMakeFiles/SDL_part1.dir/Project_SDL1.cpp.i
+	cd /home/user/CtoCpp/Project_SDL_Part1_base && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/user/CtoCpp/Project_SDL_Part1_base/Project_SDL1.cpp > CMakeFiles/SDL_part1.dir/Project_SDL1.cpp.i
 
 Project_SDL_Part1_base/CMakeFiles/SDL_part1.dir/Project_SDL1.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/SDL_part1.dir/Project_SDL1.cpp.s"
-	cd /home/merlin/CtoCpp/Project_SDL_Part1_base && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/merlin/CtoCpp/Project_SDL_Part1_base/Project_SDL1.cpp -o CMakeFiles/SDL_part1.dir/Project_SDL1.cpp.s
+	cd /home/user/CtoCpp/Project_SDL_Part1_base && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/user/CtoCpp/Project_SDL_Part1_base/Project_SDL1.cpp -o CMakeFiles/SDL_part1.dir/Project_SDL1.cpp.s
 
 # Object files for target SDL_part1
 SDL_part1_OBJECTS = \
@@ -95,8 +95,8 @@ Project_SDL_Part1_base/SDL_part1: Project_SDL_Part1_base/CMakeFiles/SDL_part1.di
 Project_SDL_Part1_base/SDL_part1: Project_SDL_Part1_base/CMakeFiles/SDL_part1.dir/Project_SDL1.cpp.o
 Project_SDL_Part1_base/SDL_part1: Project_SDL_Part1_base/CMakeFiles/SDL_part1.dir/build.make
 Project_SDL_Part1_base/SDL_part1: Project_SDL_Part1_base/CMakeFiles/SDL_part1.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/merlin/CtoCpp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX executable SDL_part1"
-	cd /home/merlin/CtoCpp/Project_SDL_Part1_base && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/SDL_part1.dir/link.txt --verbose=$(VERBOSE)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/user/CtoCpp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX executable SDL_part1"
+	cd /home/user/CtoCpp/Project_SDL_Part1_base && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/SDL_part1.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
 Project_SDL_Part1_base/CMakeFiles/SDL_part1.dir/build: Project_SDL_Part1_base/SDL_part1
@@ -104,10 +104,10 @@ Project_SDL_Part1_base/CMakeFiles/SDL_part1.dir/build: Project_SDL_Part1_base/SD
 .PHONY : Project_SDL_Part1_base/CMakeFiles/SDL_part1.dir/build
 
 Project_SDL_Part1_base/CMakeFiles/SDL_part1.dir/clean:
-	cd /home/merlin/CtoCpp/Project_SDL_Part1_base && $(CMAKE_COMMAND) -P CMakeFiles/SDL_part1.dir/cmake_clean.cmake
+	cd /home/user/CtoCpp/Project_SDL_Part1_base && $(CMAKE_COMMAND) -P CMakeFiles/SDL_part1.dir/cmake_clean.cmake
 .PHONY : Project_SDL_Part1_base/CMakeFiles/SDL_part1.dir/clean
 
 Project_SDL_Part1_base/CMakeFiles/SDL_part1.dir/depend:
-	cd /home/merlin/CtoCpp && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/merlin/CtoCpp /home/merlin/CtoCpp/Project_SDL_Part1_base /home/merlin/CtoCpp /home/merlin/CtoCpp/Project_SDL_Part1_base /home/merlin/CtoCpp/Project_SDL_Part1_base/CMakeFiles/SDL_part1.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/user/CtoCpp && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/user/CtoCpp /home/user/CtoCpp/Project_SDL_Part1_base /home/user/CtoCpp /home/user/CtoCpp/Project_SDL_Part1_base /home/user/CtoCpp/Project_SDL_Part1_base/CMakeFiles/SDL_part1.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : Project_SDL_Part1_base/CMakeFiles/SDL_part1.dir/depend
 

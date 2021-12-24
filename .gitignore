@@ -1,66 +1,9 @@
-<<<<<<< HEAD
-# Prerequisites
-*.d
-
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
-
-# Precompiled Headers
-*.gch
-*.pch
-
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
-
-# Fortran module files
-*.mod
-*.smod
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
-# Executables
-*.exe
-*.out
-*.app
-/.vs/ProjetEpitaSDL/v16/Browse.VC.db
-/.vs/ProjetEpitaSDL/v16/Browse.VC.db-shm
-/.vs/ProjetEpitaSDL/v16/Browse.VC.db-wal
-/.vs/ProjetEpitaSDL/v16/Browse.VC.opendb
-/.vs/ProjetEpitaSDL/v16/.suo
-/.vs/ProjetEpitaSDL/v16/ipch/AutoPCH/516887c6bfba93b3/PROJECT_SDL1.ipch
-/.vs/ProjetEpitaSDL/v16/ipch/AutoPCH/5b12191329891057/PROJETEPITASDL.ipch
-/x64/Debug/ProjetEpitaSDL.ilk
-/x64/Debug/ProjetEpitaSDL.log
-/x64/Debug/ProjetEpitaSDL.pdb
-/x64/Debug/ProjetEpitaSDL.tlog/CL.command.1.tlog
-/x64/Debug/ProjetEpitaSDL.tlog/CL.read.1.tlog
-/x64/Debug/ProjetEpitaSDL.tlog/link.write.1.tlog
-/x64/Debug/ProjetEpitaSDL.tlog/link.read.1.tlog
-/x64/Debug/ProjetEpitaSDL.tlog/link.command.1.tlog
-/x64/Debug/ProjetEpitaSDL.tlog/CL.write.1.tlog
-/x64/Debug/ProjetEpitaSDL.tlog/ProjetEpitaSDL.lastbuildstate
-/x64/Debug/ProjetEpitaSDL.vcxproj.FileListAbsolute.txt
-/x64/Debug/vc142.pdb
-/x64/Debug/vc142.idb
-/SDL2
-/SDL2_image
-/packages/sdl2.2.0.5
-/packages/sdl2.nuget.2.0.10
-/packages/sdl2.nuget.redist.2.0.10
-/packages/sdl2.redist.2.0.5
-/packages/sdl2_image.nuget.2.0.4
-=======
 Project_SDL_Part1_base/SDL2
 Project_SDL_Part1_base/SDL2_image
+Project_SDL_Part1_base/cmake_install.cmake
+Project_SDL_Part1_base/CMakeFiles
+Project_SDL_Part1_base/CMakefile
+Project_SDL_Part1_base/SDL_part1
 .vs
 out
->>>>>>> mvo/without-dot-sln
+cmake_install.cmake

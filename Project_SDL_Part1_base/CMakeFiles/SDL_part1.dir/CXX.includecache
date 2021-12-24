@@ -6,9 +6,9 @@
 
 #IncludeRegexTransform: 
 
-/home/merlin/CtoCpp/Project_SDL_Part1_base/Project_SDL1.cpp
+/home/user/CtoCpp/Project_SDL_Part1_base/Project_SDL1.cpp
 Project_SDL1.h
-/home/merlin/CtoCpp/Project_SDL_Part1_base/Project_SDL1.h
+/home/user/CtoCpp/Project_SDL_Part1_base/Project_SDL1.h
 algorithm
 -
 cassert
@@ -22,7 +22,7 @@ random
 string
 -
 
-/home/merlin/CtoCpp/Project_SDL_Part1_base/Project_SDL1.h
+/home/user/CtoCpp/Project_SDL_Part1_base/Project_SDL1.h
 SDL.h
 -
 SDL_image.h
@@ -38,9 +38,9 @@ vector
 random
 -
 
-/home/merlin/CtoCpp/Project_SDL_Part1_base/main.cpp
+/home/user/CtoCpp/Project_SDL_Part1_base/main.cpp
 Project_SDL1.h
-/home/merlin/CtoCpp/Project_SDL_Part1_base/Project_SDL1.h
+/home/user/CtoCpp/Project_SDL_Part1_base/Project_SDL1.h
 iostream
 -
 string
