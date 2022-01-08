@@ -1,5 +1,0 @@
-/home/user/CtoCpp/CMakeFiles/rebuild_cache.dir
-/home/user/CtoCpp/CMakeFiles/edit_cache.dir
-/home/user/CtoCpp/Project_SDL_Part1_base/CMakeFiles/rebuild_cache.dir
-/home/user/CtoCpp/Project_SDL_Part1_base/CMakeFiles/edit_cache.dir
-/home/user/CtoCpp/Project_SDL_Part1_base/CMakeFiles/SDL_part1.dir
