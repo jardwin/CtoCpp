@@ -4,6 +4,10 @@ Project_SDL_Part1_base/cmake_install.cmake
 Project_SDL_Part1_base/CMakeFiles
 Project_SDL_Part1_base/CMakefile
 Project_SDL_Part1_base/SDL_part1
+CMakeCache.txt
+CMakeFiles/
+Makefile
+Project_SDL_Part1_base/Makefile
 .vs
 out
 cmake_install.cmake
