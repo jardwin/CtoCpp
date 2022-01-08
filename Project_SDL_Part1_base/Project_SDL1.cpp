@@ -93,21 +93,13 @@ int animal::getRandomTarget(int bounding, DIRECTION dir) {
 bool animal::isOnTarget() {
 	float distance = sqrt(pow(targetX - position_.x, 2) +
                 pow(targetY - position_.y, 2) * 1.0);
-	if(distance == speed || distance == 0){
-		return true;
-	}else{
-		return false;
-	}
+	return distance == speed || distance == 0;
 }
 
 bool animal::isOnCouple(const animal& secondeAni){
 	float distance = sqrt(pow(secondeAni.position_.x - this->position_.x, 2) +
                 pow(secondeAni.position_.y - this->position_.y, 2) * 1.0);
-	if(distance >= (secondeAni.position_.w / 2) && distance <= 0){
-		return true;
-	}else{
-		return false;
-	}
+	return distance <= (secondeAni.position_.w / 2);
 }
 
 animal::animal(const std::string& file_path, SDL_Surface* window_surface_ptr) {
