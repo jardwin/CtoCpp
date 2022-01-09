@@ -21,8 +21,6 @@ void init() {
     throw std::runtime_error("init(): SDL_image could not initialize! "
                              "SDL_image Error: " +
                              std::string(IMG_GetError()));
-
-  // todo Repetition des touches?
 }
 
 SDL_Surface *load_image(const std::string& file_path){
@@ -347,8 +345,28 @@ int application::loop(unsigned period) {
             window_event_.window.event == SDL_WINDOWEVENT_CLOSE)
       break;
 
+    // todo Repetition des touches?
+
+    if(window_event_.type == SDL_KEYDOWN){
+      if (window_event_.key.keysym.sym == SDLK_z || window_event_.key.keysym.sym == SDLK_UP){
+        if(position_.y > 0)
+          position_.y -= 5;  
+      }
+      if (window_event_.key.keysym.sym == SDLK_s || window_event_.key.keysym.sym ==  SDLK_DOWN){
+        if(position_.y < frame_height - image_ptr_->h)
+          position_.y += 5;    
+      }
+      if (window_event_.key.keysym.sym == SDLK_q || window_event_.key.keysym.sym ==  SDLK_LEFT){
+        if(position_.x > 0)
+          position_.x -= 5;  
+      }
+      if (window_event_.key.keysym.sym == SDLK_d || window_event_.key.keysym.sym ==  SDLK_RIGHT){
+        if(position_.x < frame_width - image_ptr_->w)
+          position_.x += 5;    
+      }
+    }
+
     ground_->update();
-    // std::cout << std::to_string(position_.x) << std::endl;
     SDL_UpdateWindowSurface(window_ptr_);
     SDL_Delay(frame_time * 1000); // Pause execution for framerate milliseconds
   }
