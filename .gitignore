@@ -11,3 +11,8 @@ Project_SDL_Part1_base/Makefile
 .vs
 out
 cmake_install.cmake
+CMakeLists.txt
+build/ProjetEpitaSDL
+build/media/*
+SDL2/*
+SDL2_image/*
