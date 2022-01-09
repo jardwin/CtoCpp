@@ -25,6 +25,18 @@ void init() {
   // todo Repetition des touches?
 }
 
+SDL_Surface *load_image(const std::string& file_path){
+  SDL_Surface *image_ptr_ = IMG_Load(file_path.c_str());
+  if (!image_ptr_) {
+    std::cout << "OOPS! The image " << file_path
+              << " could not have been loaded" << std::endl;
+    std::cout << "Stopping application" << std::endl;
+    SDL_Quit();
+    std::exit(EXIT_FAILURE);
+  }
+  return image_ptr_;
+}
+
 // ---------------- animal class impl ----------------
 int animal::getRandomSex() {
   std::random_device rand_dev;
@@ -95,14 +107,7 @@ bool animal::isOnCouple(const animal& secondeAni) {
 void animal::setSpeed(int newSpeed) { this->speed = newSpeed; }
 
 animal::animal(const std::string& file_path, SDL_Surface* window_surface_ptr) {
-  image_ptr_ = IMG_Load(file_path.c_str());
-  if (!image_ptr_) {
-    std::cout << "OOPS! The image " << file_path
-              << " could not have been loaded" << std::endl;
-    std::cout << "Stopping application" << std::endl;
-    SDL_Quit();
-    std::exit(EXIT_FAILURE);
-  }
+  image_ptr_ = load_image(file_path.c_str());
   window_surface_ptr_ = window_surface_ptr;
   position_.x = 0;
   position_.y = 0;
@@ -159,22 +164,22 @@ void sheep::move() {
 
 void sheep::update() {
   if (this->growingPerPourcent <= 25) {
-    this->image_ptr_ = IMG_Load("../media/sheep25.png");
+    this->image_ptr_ = load_image("./media/sheep25.png");
     position_.w = image_ptr_->w;
     position_.h = image_ptr_->h;
     this->growingUp();
   } else if (this->growingPerPourcent <= 50 && this->growingPerPourcent >= 25) {
-    this->image_ptr_ = IMG_Load("../media/sheep50.png");
+    this->image_ptr_ = load_image("./media/sheep50.png");
     position_.w = image_ptr_->w;
     position_.h = image_ptr_->h;
     this->growingUp();
   } else if (this->growingPerPourcent <= 75 && this->growingPerPourcent >= 50) {
-    this->image_ptr_ = IMG_Load("../media/sheep75.png");
+    this->image_ptr_ = load_image("./media/sheep75.png");
     position_.w = image_ptr_->w;
     position_.h = image_ptr_->h;
     this->growingUp();
   } else {
-    this->image_ptr_ = IMG_Load("../media/sheep.png");
+    this->image_ptr_ = load_image("./media/sheep.png");
     position_.w = image_ptr_->w;
     position_.h = image_ptr_->h;
     if (this->growingPerPourcent < 100) {
@@ -188,7 +193,7 @@ void sheep::update() {
 void sheep::isChild() {
   this->growingPerPourcent = 1;
   this->birthday = SDL_GetTicks();
-  this->image_ptr_ = IMG_Load("../media/sheep25.png");
+  this->image_ptr_ = load_image("./media/sheep25.png");
   position_.w = image_ptr_->w;
   position_.h = image_ptr_->h;
 }
