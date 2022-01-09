@@ -23,7 +23,6 @@ void init() {
                              std::string(IMG_GetError()));
 
   // todo Repetition des touches?
-  
 }
 
 // ---------------- animal class impl ----------------
@@ -97,8 +96,9 @@ void animal::setSpeed(int newSpeed) { this->speed = newSpeed; }
 
 animal::animal(const std::string& file_path, SDL_Surface* window_surface_ptr) {
   image_ptr_ = IMG_Load(file_path.c_str());
-  if(!image_ptr_){
-    std::cout << "OOPS! The image " << file_path << " could not have been loaded" << std::endl;
+  if (!image_ptr_) {
+    std::cout << "OOPS! The image " << file_path
+              << " could not have been loaded" << std::endl;
     std::cout << "Stopping application" << std::endl;
     SDL_Quit();
     std::exit(EXIT_FAILURE);
@@ -123,7 +123,7 @@ void animal::update() { this->move(); }
 
 // ---------------- sheep class impl ----------------
 sheep::sheep(SDL_Surface* window_surface_ptr)
-    : animal("../media/sheep.png", window_surface_ptr) {
+    : animal("./media/sheep.png", window_surface_ptr) {
   this->position_.x = getRandomSpawn(DIRECTION::HORIZONTAL);
   this->position_.y = getRandomSpawn(DIRECTION::VERTICAL);
   this->targetX = getRandomTarget(100, DIRECTION::HORIZONTAL);
@@ -196,7 +196,7 @@ void sheep::isChild() {
 // ---------------- wolf class impl ----------------
 
 wolf::wolf(SDL_Surface* window_surface_ptr)
-    : animal("../media/wolf.png", window_surface_ptr) {
+    : animal("./media/wolf.png", window_surface_ptr) {
   this->position_.x = getRandomSpawn(DIRECTION::HORIZONTAL);
   this->position_.y = getRandomSpawn(DIRECTION::VERTICAL);
 
@@ -310,7 +310,7 @@ application::application(unsigned n_sheep, unsigned n_wolf) {
 
   ground_ = std::make_unique<ground>(window_surface_ptr_);
 
-  for (size_t i = 0; i < n_sheep; i++){
+  for (size_t i = 0; i < n_sheep; i++) {
     ground_->add_animal(std::make_shared<sheep>(window_surface_ptr_));
   }
 
@@ -327,29 +327,23 @@ int application::loop(unsigned period) {
   SDL_Rect windowsRect = SDL_Rect{0, 0, frame_width, frame_height};
 
   // Ajout du berger
-  const std::string file_path = "../media/shepherd.png";
-  SDL_Surface *image_ptr_ = IMG_Load(file_path.c_str());
-  if(!image_ptr_){
-    std::cout << "OOPS! The image " << file_path << " could not have been loaded" << std::endl;
-    std::cout << "Stopping application" << std::endl;
-    SDL_Quit();
-    std::exit(EXIT_FAILURE);
-  }
+  SDL_Surface* image_ptr_ = IMG_Load("./media/shepherd.png");
+
   SDL_Rect position_ = SDL_Rect{100, 100, image_ptr_->w, image_ptr_->h};
-  SDL_BlitScaled(image_ptr_, NULL, window_surface_ptr_, &position_);
-  
+
+  SDL_UpdateWindowSurface(window_ptr_);
   while (period * 1000 >= SDL_GetTicks()) {
     SDL_FillRect(window_surface_ptr_, &windowsRect,
                  SDL_MapRGB(window_surface_ptr_->format, 0, 255, 0));
     SDL_PollEvent(&window_event_);
+    SDL_BlitScaled(image_ptr_, NULL, window_surface_ptr_, &position_);
     if (window_event_.type == SDL_QUIT ||
         window_event_.type == SDL_WINDOWEVENT &&
             window_event_.window.event == SDL_WINDOWEVENT_CLOSE)
       break;
+
     ground_->update();
-    position_.x += 10;
-    position_.y += 10;
-    //std::cout << std::to_string(position_.x) << std::endl;
+    // std::cout << std::to_string(position_.x) << std::endl;
     SDL_UpdateWindowSurface(window_ptr_);
     SDL_Delay(frame_time * 1000); // Pause execution for framerate milliseconds
   }
