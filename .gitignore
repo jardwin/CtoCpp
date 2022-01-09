@@ -16,3 +16,4 @@ build/ProjetEpitaSDL
 build/media/*
 SDL2/*
 SDL2_image/*
+CMakeLists.txt
