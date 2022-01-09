@@ -21,7 +21,11 @@ void init() {
     throw std::runtime_error("init(): SDL_image could not initialize! "
                              "SDL_image Error: " +
                              std::string(IMG_GetError()));
+
+  // todo Repetition des touches?
+  
 }
+
 // ---------------- animal class impl ----------------
 int animal::getRandomSex() {
   std::random_device rand_dev;
@@ -93,6 +97,12 @@ void animal::setSpeed(int newSpeed) { this->speed = newSpeed; }
 
 animal::animal(const std::string& file_path, SDL_Surface* window_surface_ptr) {
   image_ptr_ = IMG_Load(file_path.c_str());
+  if(!image_ptr_){
+    std::cout << "OOPS! The image " << file_path << " could not have been loaded" << std::endl;
+    std::cout << "Stopping application" << std::endl;
+    SDL_Quit();
+    std::exit(EXIT_FAILURE);
+  }
   window_surface_ptr_ = window_surface_ptr;
   position_.x = 0;
   position_.y = 0;
@@ -113,7 +123,7 @@ void animal::update() { this->move(); }
 
 // ---------------- sheep class impl ----------------
 sheep::sheep(SDL_Surface* window_surface_ptr)
-    : animal("./media/sheep.png", window_surface_ptr) {
+    : animal("../media/sheep.png", window_surface_ptr) {
   this->position_.x = getRandomSpawn(DIRECTION::HORIZONTAL);
   this->position_.y = getRandomSpawn(DIRECTION::VERTICAL);
   this->targetX = getRandomTarget(100, DIRECTION::HORIZONTAL);
@@ -149,22 +159,22 @@ void sheep::move() {
 
 void sheep::update() {
   if (this->growingPerPourcent <= 25) {
-    this->image_ptr_ = IMG_Load("./media/sheep25.png");
+    this->image_ptr_ = IMG_Load("../media/sheep25.png");
     position_.w = image_ptr_->w;
     position_.h = image_ptr_->h;
     this->growingUp();
   } else if (this->growingPerPourcent <= 50 && this->growingPerPourcent >= 25) {
-    this->image_ptr_ = IMG_Load("./media/sheep50.png");
+    this->image_ptr_ = IMG_Load("../media/sheep50.png");
     position_.w = image_ptr_->w;
     position_.h = image_ptr_->h;
     this->growingUp();
   } else if (this->growingPerPourcent <= 75 && this->growingPerPourcent >= 50) {
-    this->image_ptr_ = IMG_Load("./media/sheep75.png");
+    this->image_ptr_ = IMG_Load("../media/sheep75.png");
     position_.w = image_ptr_->w;
     position_.h = image_ptr_->h;
     this->growingUp();
   } else {
-    this->image_ptr_ = IMG_Load("./media/sheep.png");
+    this->image_ptr_ = IMG_Load("../media/sheep.png");
     position_.w = image_ptr_->w;
     position_.h = image_ptr_->h;
     if (this->growingPerPourcent < 100) {
@@ -178,7 +188,7 @@ void sheep::update() {
 void sheep::isChild() {
   this->growingPerPourcent = 1;
   this->birthday = SDL_GetTicks();
-  this->image_ptr_ = IMG_Load("./media/sheep25.png");
+  this->image_ptr_ = IMG_Load("../media/sheep25.png");
   position_.w = image_ptr_->w;
   position_.h = image_ptr_->h;
 }
@@ -186,7 +196,7 @@ void sheep::isChild() {
 // ---------------- wolf class impl ----------------
 
 wolf::wolf(SDL_Surface* window_surface_ptr)
-    : animal("./media/wolf.png", window_surface_ptr) {
+    : animal("../media/wolf.png", window_surface_ptr) {
   this->position_.x = getRandomSpawn(DIRECTION::HORIZONTAL);
   this->position_.y = getRandomSpawn(DIRECTION::VERTICAL);
 
@@ -300,8 +310,9 @@ application::application(unsigned n_sheep, unsigned n_wolf) {
 
   ground_ = std::make_unique<ground>(window_surface_ptr_);
 
-  for (size_t i = 0; i < n_sheep; i++)
+  for (size_t i = 0; i < n_sheep; i++){
     ground_->add_animal(std::make_shared<sheep>(window_surface_ptr_));
+  }
 
   for (size_t i = 0; i < n_wolf; i++)
     ground_->add_animal(std::make_shared<wolf>(window_surface_ptr_));
@@ -314,6 +325,19 @@ application::~application() {
 
 int application::loop(unsigned period) {
   SDL_Rect windowsRect = SDL_Rect{0, 0, frame_width, frame_height};
+
+  // Ajout du berger
+  const std::string file_path = "../media/shepherd.png";
+  SDL_Surface *image_ptr_ = IMG_Load(file_path.c_str());
+  if(!image_ptr_){
+    std::cout << "OOPS! The image " << file_path << " could not have been loaded" << std::endl;
+    std::cout << "Stopping application" << std::endl;
+    SDL_Quit();
+    std::exit(EXIT_FAILURE);
+  }
+  SDL_Rect position_ = SDL_Rect{100, 100, image_ptr_->w, image_ptr_->h};
+  SDL_BlitScaled(image_ptr_, NULL, window_surface_ptr_, &position_);
+  
   while (period * 1000 >= SDL_GetTicks()) {
     SDL_FillRect(window_surface_ptr_, &windowsRect,
                  SDL_MapRGB(window_surface_ptr_->format, 0, 255, 0));
@@ -323,6 +347,9 @@ int application::loop(unsigned period) {
             window_event_.window.event == SDL_WINDOWEVENT_CLOSE)
       break;
     ground_->update();
+    position_.x += 10;
+    position_.y += 10;
+    //std::cout << std::to_string(position_.x) << std::endl;
     SDL_UpdateWindowSurface(window_ptr_);
     SDL_Delay(frame_time * 1000); // Pause execution for framerate milliseconds
   }
