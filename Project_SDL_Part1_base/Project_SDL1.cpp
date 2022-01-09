@@ -329,6 +329,8 @@ application::~application() {
 int application::loop(unsigned period) {
   SDL_Rect windowsRect = SDL_Rect{0, 0, frame_width, frame_height};
 
+  bool keys[322] = {false}; // 322 is the number of scancodes
+
   // Ajout du berger
   SDL_Surface* image_ptr_ = IMG_Load("./media/shepherd.png");
 
@@ -345,25 +347,33 @@ int application::loop(unsigned period) {
             window_event_.window.event == SDL_WINDOWEVENT_CLOSE)
       break;
 
-    // todo Repetition des touches?
-
+    // Gestion des touches
     if(window_event_.type == SDL_KEYDOWN){
-      if (window_event_.key.keysym.sym == SDLK_z || window_event_.key.keysym.sym == SDLK_UP){
-        if(position_.y > 0)
-          position_.y -= 5;  
-      }
-      if (window_event_.key.keysym.sym == SDLK_s || window_event_.key.keysym.sym ==  SDLK_DOWN){
-        if(position_.y < frame_height - image_ptr_->h)
-          position_.y += 5;    
-      }
-      if (window_event_.key.keysym.sym == SDLK_q || window_event_.key.keysym.sym ==  SDLK_LEFT){
-        if(position_.x > 0)
-          position_.x -= 5;  
-      }
-      if (window_event_.key.keysym.sym == SDLK_d || window_event_.key.keysym.sym ==  SDLK_RIGHT){
-        if(position_.x < frame_width - image_ptr_->w)
-          position_.x += 5;    
-      }
+      keys[window_event_.key.keysym.scancode] = true;
+    }
+    else if(window_event_.type == SDL_KEYUP){
+      keys[window_event_.key.keysym.scancode] = false;
+    }
+
+    if(keys[SDL_SCANCODE_UP] || keys[SDL_SCANCODE_W]) // W -> Z on AZERTY
+    {
+      if(position_.y > 0)
+        position_.y -= 5;  
+    }
+    if(keys[SDL_SCANCODE_DOWN] || keys[SDL_SCANCODE_S])
+    {
+      if(position_.y < frame_height - image_ptr_->h)
+        position_.y += 5;
+    }
+    if(keys[SDL_SCANCODE_LEFT] || keys[SDL_SCANCODE_A]) // A -> Q on AZERTY
+    {
+      if(position_.x > 0)
+        position_.x -= 5; 
+    }
+    if(keys[SDL_SCANCODE_RIGHT] || keys[SDL_SCANCODE_D])
+    {
+      if(position_.x < frame_width - image_ptr_->w)
+        position_.x += 5;   
     }
 
     ground_->update();
