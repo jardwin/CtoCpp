@@ -86,6 +86,30 @@ public:
 // Use only sheep at first. Once the application works
 // for sheep you can add the wolves
 
+class shepherd {
+public:
+  SDL_Surface* window_surface_ptr_; // ptr to the surface on which we want the
+  shepherd(SDL_Surface* window_surface_ptr);
+  ~shepherd();
+  void move(const SDL_Event& event, bool keys[322]);
+
+private:
+  SDL_Surface* image_ptr_; // The texture of the sheep (the loaded image), use
+  SDL_Rect position_;
+};
+
+class shepherd_dog {
+public:
+  SDL_Surface* window_surface_ptr_; // ptr to the surface on which we want the
+  shepherd_dog(SDL_Surface* window_surface_ptr, const shepherd& master);
+  ~shepherd_dog();
+  void move(const shepherd& master);
+
+private:
+  SDL_Surface* image_ptr_; // The texture of the sheep (the loaded image), use
+  SDL_Rect position_;
+};
+
 // The "ground" on which all the animals live (like the std::vector
 // in the zoo example).
 class ground {

@@ -23,8 +23,8 @@ void init() {
                              std::string(IMG_GetError()));
 }
 
-SDL_Surface *load_image(const std::string& file_path){
-  SDL_Surface *image_ptr_ = IMG_Load(file_path.c_str());
+SDL_Surface* load_image(const std::string& file_path) {
+  SDL_Surface* image_ptr_ = IMG_Load(file_path.c_str());
   if (!image_ptr_) {
     std::cout << "OOPS! The image " << file_path
               << " could not have been loaded" << std::endl;
@@ -227,6 +227,61 @@ void wolf::move() {
   }
 }
 
+shepherd::shepherd(SDL_Surface* window_surface_ptr) { // Ajout du berger
+  image_ptr_ = load_image("./media/shepherd.png");
+  window_surface_ptr_ = window_surface_ptr;
+  position_.x = 100;
+  position_.y = 100;
+  position_.w = image_ptr_->w / 2;
+  position_.h = image_ptr_->h / 2;
+}
+
+shepherd::~shepherd() { SDL_FreeSurface(image_ptr_); }
+
+void shepherd::move(const SDL_Event& event, bool keys[322]) {
+  // Gestion des touches
+  if (event.type == SDL_KEYDOWN) {
+    keys[event.key.keysym.scancode] = true;
+  } else if (event.type == SDL_KEYUP) {
+    keys[event.key.keysym.scancode] = false;
+  }
+
+  if (keys[SDL_SCANCODE_UP] || keys[SDL_SCANCODE_W]) // W -> Z on AZERTY
+  {
+    if (position_.y > 0)
+      position_.y -= 3;
+  }
+  if (keys[SDL_SCANCODE_DOWN] || keys[SDL_SCANCODE_S]) {
+    if (position_.y < frame_height - position_.h)
+      position_.y += 3;
+  }
+  if (keys[SDL_SCANCODE_LEFT] || keys[SDL_SCANCODE_A]) // A -> Q on AZERTY
+  {
+    if (position_.x > 0)
+      position_.x -= 3;
+  }
+  if (keys[SDL_SCANCODE_RIGHT] || keys[SDL_SCANCODE_D]) {
+    if (position_.x < frame_width - position_.w)
+      position_.x += 3;
+  }
+
+  SDL_BlitScaled(image_ptr_, NULL, window_surface_ptr_, &position_);
+}
+
+shepherd_dog::shepherd_dog(SDL_Surface* window_surface_ptr,
+                           const shepherd& master) {
+  image_ptr_ = load_image("./media/shepherd_dog.png");
+  window_surface_ptr_ = window_surface_ptr;
+  position_.x = 31;
+  position_.y = 31;
+  position_.w = image_ptr_->w;
+  position_.h = image_ptr_->h;
+}
+
+shepherd_dog::~shepherd_dog() { SDL_FreeSurface(image_ptr_); }
+
+void shepherd_dog::move(const shepherd& master) {}
+
 // ---------------- ground class impl ----------------
 
 ground::ground(SDL_Surface* window_surface_ptr) {
@@ -328,54 +383,21 @@ application::~application() {
 
 int application::loop(unsigned period) {
   SDL_Rect windowsRect = SDL_Rect{0, 0, frame_width, frame_height};
+  shepherd player = shepherd(window_surface_ptr_);
+  shepherd_dog doggo = shepherd_dog(window_surface_ptr_, player);
 
-  bool keys[322] = {false}; // 322 is the number of scancodes
-
-  // Ajout du berger
-  SDL_Surface* image_ptr_ = IMG_Load("./media/shepherd.png");
-
-  SDL_Rect position_ = SDL_Rect{100, 100, image_ptr_->w, image_ptr_->h};
-
+  bool keys[322] = {false};
   SDL_UpdateWindowSurface(window_ptr_);
   while (period * 1000 >= SDL_GetTicks()) {
     SDL_FillRect(window_surface_ptr_, &windowsRect,
                  SDL_MapRGB(window_surface_ptr_->format, 0, 255, 0));
     SDL_PollEvent(&window_event_);
-    SDL_BlitScaled(image_ptr_, NULL, window_surface_ptr_, &position_);
     if (window_event_.type == SDL_QUIT ||
         window_event_.type == SDL_WINDOWEVENT &&
             window_event_.window.event == SDL_WINDOWEVENT_CLOSE)
       break;
 
-    // Gestion des touches
-    if(window_event_.type == SDL_KEYDOWN){
-      keys[window_event_.key.keysym.scancode] = true;
-    }
-    else if(window_event_.type == SDL_KEYUP){
-      keys[window_event_.key.keysym.scancode] = false;
-    }
-
-    if(keys[SDL_SCANCODE_UP] || keys[SDL_SCANCODE_W]) // W -> Z on AZERTY
-    {
-      if(position_.y > 0)
-        position_.y -= 5;  
-    }
-    if(keys[SDL_SCANCODE_DOWN] || keys[SDL_SCANCODE_S])
-    {
-      if(position_.y < frame_height - image_ptr_->h)
-        position_.y += 5;
-    }
-    if(keys[SDL_SCANCODE_LEFT] || keys[SDL_SCANCODE_A]) // A -> Q on AZERTY
-    {
-      if(position_.x > 0)
-        position_.x -= 5; 
-    }
-    if(keys[SDL_SCANCODE_RIGHT] || keys[SDL_SCANCODE_D])
-    {
-      if(position_.x < frame_width - image_ptr_->w)
-        position_.x += 5;   
-    }
-
+    player.move(window_event_, keys);
     ground_->update();
     SDL_UpdateWindowSurface(window_ptr_);
     SDL_Delay(frame_time * 1000); // Pause execution for framerate milliseconds
