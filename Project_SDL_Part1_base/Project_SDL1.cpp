@@ -285,7 +285,7 @@ shepherd_dog::shepherd_dog(SDL_Surface* window_surface_ptr,
 
 shepherd_dog::~shepherd_dog() { SDL_FreeSurface(image_ptr_); }
 
-void shepherd_dog::move(const shepherd& master, int degree) {
+void shepherd_dog::move(const shepherd& master, double degree) {
   position_.x = master.position_.x + master.position_.w * cos(degree * 180/ PI);
   position_.y = master.position_.y + master.position_.h * sin(degree * 180/ PI);
 
@@ -411,7 +411,7 @@ int application::loop(unsigned period) {
   SDL_UpdateWindowSurface(window_ptr_);
   // dirty... this is just to have a very tiny number and not make the doggo
   // spin like mad
-  int degree = 0.0;
+  double degree = 0.0;
 
   while (period * 1000 >= SDL_GetTicks()) {
     SDL_FillRect(window_surface_ptr_, &windowsRect,
@@ -421,7 +421,10 @@ int application::loop(unsigned period) {
         window_event_.type == SDL_WINDOWEVENT &&
             window_event_.window.event == SDL_WINDOWEVENT_CLOSE)
       break;
-    degree = (degree + 1) % 360;
+    degree += 0.003;
+    if(degree >= 360.0){
+      degree = 0.0;
+    }
     player.move(window_event_, keys);
     doggo.move(player, degree);
     ground_->update();
