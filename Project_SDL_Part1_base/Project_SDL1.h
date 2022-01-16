@@ -11,6 +11,8 @@
 #include <random>
 #include <vector>
 
+#define PI 3.14159265
+
 // Defintions
 constexpr double frame_rate = 60.0; // refresh rate
 constexpr double frame_time = 1. / frame_rate;
@@ -89,13 +91,13 @@ public:
 class shepherd {
 public:
   SDL_Surface* window_surface_ptr_; // ptr to the surface on which we want the
+  SDL_Rect position_;
   shepherd(SDL_Surface* window_surface_ptr);
   ~shepherd();
   void move(const SDL_Event& event, bool keys[322]);
 
 private:
   SDL_Surface* image_ptr_; // The texture of the sheep (the loaded image), use
-  SDL_Rect position_;
 };
 
 class shepherd_dog {
@@ -103,7 +105,7 @@ public:
   SDL_Surface* window_surface_ptr_; // ptr to the surface on which we want the
   shepherd_dog(SDL_Surface* window_surface_ptr, const shepherd& master);
   ~shepherd_dog();
-  void move(const shepherd& master);
+  void move(const shepherd& master, int degree);
 
 private:
   SDL_Surface* image_ptr_; // The texture of the sheep (the loaded image), use

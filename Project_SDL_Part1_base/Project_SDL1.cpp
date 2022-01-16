@@ -9,6 +9,7 @@
 #include <numeric>
 #include <random>
 #include <string>
+#include <math.h>
 
 void init() {
   // Initialize SDL
@@ -227,6 +228,8 @@ void wolf::move() {
   }
 }
 
+// ---------------- shepherd class impl ----------------
+
 shepherd::shepherd(SDL_Surface* window_surface_ptr) { // Ajout du berger
   image_ptr_ = load_image("./media/shepherd.png");
   window_surface_ptr_ = window_surface_ptr;
@@ -268,6 +271,8 @@ void shepherd::move(const SDL_Event& event, bool keys[322]) {
   SDL_BlitScaled(image_ptr_, NULL, window_surface_ptr_, &position_);
 }
 
+// ---------------- shepherd_dog class impl ----------------
+
 shepherd_dog::shepherd_dog(SDL_Surface* window_surface_ptr,
                            const shepherd& master) {
   image_ptr_ = load_image("./media/shepherd_dog.png");
@@ -280,7 +285,23 @@ shepherd_dog::shepherd_dog(SDL_Surface* window_surface_ptr,
 
 shepherd_dog::~shepherd_dog() { SDL_FreeSurface(image_ptr_); }
 
-void shepherd_dog::move(const shepherd& master) {}
+void shepherd_dog::move(const shepherd& master, int degree) {
+  position_.x = master.position_.x + master.position_.w * cos(degree * 180/ PI);
+  position_.y = master.position_.y + master.position_.h * sin(degree * 180/ PI);
+
+  if(position_.x < 0)
+    position_.x = 0;
+  else if(position_.x > frame_width - position_.w)
+    position_.x = frame_width - position_.w;
+  if(position_.y < 0)
+    position_.y = 0;
+  else if(position_.y > frame_height - position_.h)
+    position_.y = frame_height - position_.h;
+
+  std::cout << std::to_string(position_.y) << std::endl;
+
+  SDL_BlitScaled(image_ptr_, NULL, window_surface_ptr_, &position_);
+}
 
 // ---------------- ground class impl ----------------
 
@@ -388,6 +409,10 @@ int application::loop(unsigned period) {
 
   bool keys[322] = {false};
   SDL_UpdateWindowSurface(window_ptr_);
+  // dirty... this is just to have a very tiny number and not make the doggo
+  // spin like mad
+  int degree = 0.0;
+
   while (period * 1000 >= SDL_GetTicks()) {
     SDL_FillRect(window_surface_ptr_, &windowsRect,
                  SDL_MapRGB(window_surface_ptr_->format, 0, 255, 0));
@@ -396,8 +421,9 @@ int application::loop(unsigned period) {
         window_event_.type == SDL_WINDOWEVENT &&
             window_event_.window.event == SDL_WINDOWEVENT_CLOSE)
       break;
-
+    degree = (degree + 1) % 360;
     player.move(window_event_, keys);
+    doggo.move(player, degree);
     ground_->update();
     SDL_UpdateWindowSurface(window_ptr_);
     SDL_Delay(frame_time * 1000); // Pause execution for framerate milliseconds
