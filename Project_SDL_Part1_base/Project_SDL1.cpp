@@ -6,10 +6,10 @@
 #include <algorithm>
 #include <cassert>
 #include <cstdlib>
+#include <math.h>
 #include <numeric>
 #include <random>
 #include <string>
-#include <math.h>
 
 void init() {
   // Initialize SDL
@@ -235,8 +235,8 @@ shepherd::shepherd(SDL_Surface* window_surface_ptr) { // Ajout du berger
   window_surface_ptr_ = window_surface_ptr;
   position_.x = 100;
   position_.y = 100;
-  position_.w = image_ptr_->w / 2;
-  position_.h = image_ptr_->h / 2;
+  position_.w = image_ptr_->w;
+  position_.h = image_ptr_->h;
 }
 
 shepherd::~shepherd() { SDL_FreeSurface(image_ptr_); }
@@ -277,8 +277,8 @@ shepherd_dog::shepherd_dog(SDL_Surface* window_surface_ptr,
                            const shepherd& master) {
   image_ptr_ = load_image("./media/shepherd_dog.png");
   window_surface_ptr_ = window_surface_ptr;
-  position_.x = 31;
-  position_.y = 31;
+  position_.x = 131;
+  position_.y = 131;
   position_.w = image_ptr_->w;
   position_.h = image_ptr_->h;
 }
@@ -286,19 +286,19 @@ shepherd_dog::shepherd_dog(SDL_Surface* window_surface_ptr,
 shepherd_dog::~shepherd_dog() { SDL_FreeSurface(image_ptr_); }
 
 void shepherd_dog::move(const shepherd& master, double degree) {
-  position_.x = master.position_.x + master.position_.w * cos(degree * 180/ PI);
-  position_.y = master.position_.y + master.position_.h * sin(degree * 180/ PI);
+  position_.x = abs(master.position_.x +
+                    (master.position_.w / 2) * cos(degree * 360 / PI));
+  position_.y = abs(master.position_.y +
+                    (master.position_.h / 2) * sin(degree * 360 / PI));
 
-  if(position_.x < 0)
+  if (position_.x < 0)
     position_.x = 0;
-  else if(position_.x > frame_width - position_.w)
+  else if (position_.x > frame_width - position_.w)
     position_.x = frame_width - position_.w;
-  if(position_.y < 0)
+  if (position_.y < 0)
     position_.y = 0;
-  else if(position_.y > frame_height - position_.h)
+  else if (position_.y > frame_height - position_.h)
     position_.y = frame_height - position_.h;
-
-  std::cout << std::to_string(position_.y) << std::endl;
 
   SDL_BlitScaled(image_ptr_, NULL, window_surface_ptr_, &position_);
 }
@@ -421,8 +421,8 @@ int application::loop(unsigned period) {
         window_event_.type == SDL_WINDOWEVENT &&
             window_event_.window.event == SDL_WINDOWEVENT_CLOSE)
       break;
-    degree += 0.003;
-    if(degree >= 360.0){
+    degree += 0.0006;
+    if (degree >= 360.0) {
       degree = 0.0;
     }
     player.move(window_event_, keys);
