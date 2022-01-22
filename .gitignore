@@ -9,6 +9,7 @@ CMakeFiles/
 Makefile
 Project_SDL_Part1_base/Makefile
 .vs
+.vscode
 out
 cmake_install.cmake
 CMakeLists.txt

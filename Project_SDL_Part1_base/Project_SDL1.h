@@ -52,6 +52,7 @@ public:
   bool isOnCouple(const animal&);
   void draw();
   void setSpeed(int newSpeed);
+  void runAway(const animal&);
 
   virtual void move() = 0;
   virtual void update();

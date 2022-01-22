@@ -105,6 +105,16 @@ bool animal::isOnCouple(const animal& secondeAni) {
 
 void animal::setSpeed(int newSpeed) { this->speed = newSpeed; }
 
+void animal::runAway(const animal& seconde) {
+  auto degree = SDL_atan2(position_.y - seconde.position_.y,
+                          position_.x - seconde.position_.x);
+  targetX = abs(position_.x + 150 * cos(degree * 180 / PI));
+  targetY = abs(position_.y + 150 * sin(degree * 180 / PI));
+  std::cout << "newTarget is = " << targetX << "," << targetY
+            << " and wolf is = " << seconde.position_.x << ","
+            << seconde.position_.y << "\n";
+}
+
 animal::animal(const std::string& file_path, SDL_Surface* window_surface_ptr) {
   image_ptr_ = load_image(file_path.c_str());
   window_surface_ptr_ = window_surface_ptr;
@@ -331,13 +341,13 @@ void ground::appendOffspring(sheep& first, sheep& second) {
 
 void ground::update() {
   unsigned initSize = animals_.size();
-  for (int i = 0; i < initSize; i++) {
-    animal& ani = *animals_[i];
+  for (auto aniIT = animals_.begin(); aniIT != animals_.end(); ++aniIT) {
+    animal& ani = *aniIT.base()->get();
     ani.update();
     ani.draw();
 
-    for (int y = i + 1; y < initSize; y++) {
-      animal& secondeAni = *animals_[y];
+    for (auto secondeIT = aniIT + 1; secondeIT < animals_.end(); ++secondeIT) {
+      animal& secondeAni = *secondeIT.base()->get();
 
       // collision between two sheep (hitbox start on top left and stop on the
       // half of the image, to simulate one is inside other)
@@ -355,11 +365,24 @@ void ground::update() {
            typeid(secondeAni) == typeid(sheep))) {
         if (sqrt(pow(secondeAni.position_.x - ani.position_.x, 2) +
                  pow(secondeAni.position_.y - ani.position_.y, 2) * 1.0) <=
-            100) {
+            200) {
           if (typeid(ani) == typeid(wolf)) {
             secondeAni.setSpeed(2);
+            secondeAni.runAway(ani);
+            if (sqrt(pow(secondeAni.position_.x - ani.position_.x, 2) +
+                     pow(secondeAni.position_.y - ani.position_.y, 2) * 1.0) <=
+                secondeAni.position_.w / 2) {
+              this->animals_.erase(secondeIT);
+            }
           } else {
             ani.setSpeed(2);
+            ani.runAway(secondeAni);
+            if (sqrt(pow(secondeAni.position_.x - ani.position_.x, 2) +
+                     pow(secondeAni.position_.y - ani.position_.y, 2) * 1.0) <=
+                secondeAni.position_.w / 2) {
+              this->animals_.erase(aniIT);
+              break;
+            }
           }
         } else {
           if (typeid(ani) == typeid(wolf)) {
