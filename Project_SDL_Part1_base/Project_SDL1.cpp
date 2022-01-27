@@ -277,17 +277,14 @@ void shepherd::move(const SDL_Event& event, bool keys[322]) {
 
 // ---------------- shepherd_dog class impl ----------------
 
-shepherd_dog::shepherd_dog(SDL_Surface* window_surface_ptr,
-                           const shepherd& master) {
-  image_ptr_ = load_image("./media/shepherd_dog.png");
+shepherd_dog::shepherd_dog(SDL_Surface* window_surface_ptr) : 
+                           animal("./media/shepherd_dog.png", window_surface_ptr) {
   window_surface_ptr_ = window_surface_ptr;
   position_.x = 131;
   position_.y = 131;
   position_.w = image_ptr_->w;
   position_.h = image_ptr_->h;
 }
-
-shepherd_dog::~shepherd_dog() { SDL_FreeSurface(image_ptr_); }
 
 void shepherd_dog::move(const shepherd& master, double degree) {
   position_.x = abs(master.position_.x +
@@ -344,6 +341,17 @@ void ground::update() {
     animal& ani = *aniIT.base()->get();
     ani.update();
     ani.draw();
+
+    // TODO : faire le chien qui chasse les loups..........
+    /*if(typeid(ani) == typeid(wolf)){
+      std::cout << "wolf" << std::endl;
+    }
+    if(typeid(ani) == typeid(sheep)){
+      std::cout << "sheep" << std::endl;
+    }
+    if(typeid(ani) == typeid(shepherd_dog)){
+      std::cout << "Dog" << std::endl;
+    }*/
 
     for (auto secondeIT = aniIT + 1; secondeIT < animals_.end(); ++secondeIT) {
       animal& secondeAni = *secondeIT.base()->get();
@@ -411,6 +419,8 @@ application::application(unsigned n_sheep, unsigned n_wolf) {
 
   ground_ = std::make_unique<ground>(window_surface_ptr_);
 
+  ground_->add_animal(std::make_shared<shepherd_dog>(window_surface_ptr_));
+
   for (size_t i = 0; i < n_sheep; i++) {
     ground_->add_animal(std::make_shared<sheep>(window_surface_ptr_));
   }
@@ -427,7 +437,7 @@ application::~application() {
 int application::loop(unsigned period) {
   SDL_Rect windowsRect = SDL_Rect{0, 0, frame_width, frame_height};
   shepherd player = shepherd(window_surface_ptr_);
-  shepherd_dog doggo = shepherd_dog(window_surface_ptr_, player);
+  shepherd_dog doggo = shepherd_dog(window_surface_ptr_);
 
   bool keys[322] = {false};
   SDL_UpdateWindowSurface(window_ptr_);

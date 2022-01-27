@@ -99,15 +99,14 @@ private:
   SDL_Surface* image_ptr_; // The texture of the sheep (the loaded image), use
 };
 
-class shepherd_dog {
+class shepherd_dog : public animal {
 public:
   SDL_Surface* window_surface_ptr_; // ptr to the surface on which we want the
-  shepherd_dog(SDL_Surface* window_surface_ptr, const shepherd& master);
-  ~shepherd_dog();
+  shepherd_dog(SDL_Surface* window_surface_ptr);
+  //~shepherd_dog();
   void move(const shepherd& master, double degree);
 
 private:
-  SDL_Surface* image_ptr_; // The texture of the sheep (the loaded image), use
   SDL_Rect position_;
 };
 
