@@ -274,8 +274,8 @@ void shepherd::move(const SDL_Event& event, bool keys[322]) {
 
 // ---------------- shepherd_dog class impl ----------------
 
-shepherd_dog::shepherd_dog(SDL_Surface* window_surface_ptr) : 
-                           animal("./media/shepherd_dog.png", window_surface_ptr) {
+shepherd_dog::shepherd_dog(SDL_Surface* window_surface_ptr)
+    : animal("./media/shepherd_dog.png", window_surface_ptr) {
   window_surface_ptr_ = window_surface_ptr;
   position_.x = 131;
   position_.y = 131;
@@ -308,7 +308,7 @@ ground::ground(SDL_Surface* window_surface_ptr) {
   animals_ = std::vector<std::shared_ptr<animal>>();
 }
 
-ground::~ground() { SDL_FreeSurface(window_surface_ptr_); };
+ground::~ground() { animals_.clear(); };
 
 void ground::add_animal(std::shared_ptr<animal> newAnimal) {
   animals_.push_back(newAnimal);
@@ -329,7 +329,7 @@ void ground::appendOffspring(sheep& first, sheep& second) {
 
 void ground::update() {
   unsigned initSize = animals_.size();
-  
+
   // we compare the current animal to the next one and see if an event occur
   // this mean EACH animal is compared to ALL the others ONCE
   for (auto aniIT = animals_.begin(); aniIT != animals_.end(); ++aniIT) {
@@ -363,8 +363,10 @@ void ground::update() {
 
       // handle the wolf-sheep chase : - if a sheep is near to a wolf it run
       // - if the wolf is on a sheep he's eaten
-      if ((typeid(ani) == typeid(wolf) && typeid(secondeAni) == typeid(sheep)) ||
-          (typeid(ani) == typeid(sheep) || typeid(secondeAni) == typeid(wolf))) {
+      if ((typeid(ani) == typeid(wolf) &&
+           typeid(secondeAni) == typeid(sheep)) ||
+          (typeid(ani) == typeid(sheep) ||
+           typeid(secondeAni) == typeid(wolf))) {
         if (sqrt(pow(secondeAni.position_.x - ani.position_.x, 2) +
                  pow(secondeAni.position_.y - ani.position_.y, 2) * 1.0) <=
             200) {
