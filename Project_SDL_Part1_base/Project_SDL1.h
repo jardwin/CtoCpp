@@ -54,7 +54,7 @@ public:
   void setSpeed(int newSpeed);
   void runAway(const animal&);
 
-  virtual void move() = 0;
+  void move();
   virtual void update();
   // todo: Animals move around, but in a different
   // fashion depending on which type of animal
@@ -73,7 +73,6 @@ public:
   ~sheep() {}
   void isChild();
   void update();
-  void move();
   // implement functions that are purely virtual in base class
 };
 
@@ -84,7 +83,6 @@ public:
   wolf(SDL_Surface* window_surface_ptr);
   ~wolf() {}
   // implement functions that are purely virtual in base class
-  void move();
 };
 // Use only sheep at first. Once the application works
 // for sheep you can add the wolves

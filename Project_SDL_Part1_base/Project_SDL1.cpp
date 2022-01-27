@@ -141,6 +141,23 @@ animal::animal(const std::string& file_path, SDL_Surface* window_surface_ptr) {
 
 animal::~animal() { SDL_FreeSurface(image_ptr_); };
 
+void animal::move() {
+  if (position_.x > targetX) {
+    position_.x -= speed;
+  } else if (position_.x < targetX) {
+    position_.x += speed;
+  }
+  if (position_.y > targetY) {
+    position_.y -= speed;
+  } else if (position_.y < targetY) {
+    position_.y += speed;
+  }
+  if (isOnTarget()) {
+    this->targetX = getRandomTarget(100, DIRECTION::HORIZONTAL);
+    this->targetY = getRandomTarget(100, DIRECTION::VERTICAL);
+  }
+}
+
 void animal::draw() {
   SDL_BlitScaled(image_ptr_, NULL, window_surface_ptr_, &position_);
 };
@@ -163,23 +180,6 @@ void sheep::growingUp() {
   unsigned interval = SDL_GetTicks() - this->birthday;
   if (interval % 4 == 0) {
     this->growingPerPourcent++;
-  }
-}
-
-void sheep::move() {
-  if (position_.x > targetX) {
-    position_.x -= speed;
-  } else if (position_.x < targetX) {
-    position_.x += speed;
-  }
-  if (position_.y > targetY) {
-    position_.y -= speed;
-  } else if (position_.y < targetY) {
-    position_.y += speed;
-  }
-  if (isOnTarget()) {
-    this->targetX = getRandomTarget(100, DIRECTION::HORIZONTAL);
-    this->targetY = getRandomTarget(100, DIRECTION::VERTICAL);
   }
 }
 
@@ -230,24 +230,6 @@ wolf::wolf(SDL_Surface* window_surface_ptr)
   this->targetY = getRandomTarget(100, DIRECTION::VERTICAL);
 
   this->growingPerPourcent = 100;
-}
-
-void wolf::move() {
-  if (position_.x > targetX) {
-    position_.x -= speed;
-  } else if (position_.x < targetX) {
-    position_.x += speed;
-  }
-  if (position_.y > targetY) {
-    position_.y -= speed;
-  } else if (position_.y < targetY) {
-    position_.y += speed;
-  }
-  if ((targetX - speed <= position_.x && position_.x <= targetX + speed) &&
-      (targetY - speed <= position_.y && position_.y <= targetY + speed)) {
-    this->targetX = getRandomTarget(100, DIRECTION::HORIZONTAL);
-    this->targetY = getRandomTarget(100, DIRECTION::VERTICAL);
-  }
 }
 
 // ---------------- shepherd class impl ----------------
