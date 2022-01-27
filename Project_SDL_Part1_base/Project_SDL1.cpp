@@ -309,6 +309,8 @@ void shepherd_dog::move(const shepherd& master, double degree) {
 
 // ---------------- ground class impl ----------------
 
+bool test = true;
+
 ground::ground(SDL_Surface* window_surface_ptr) {
   window_surface_ptr_ = window_surface_ptr;
   animals_ = std::vector<std::shared_ptr<animal>>();
@@ -335,6 +337,9 @@ void ground::appendOffspring(sheep& first, sheep& second) {
 
 void ground::update() {
   unsigned initSize = animals_.size();
+  
+  // we compare the current animal to the next one and see if an event occur
+  // this mean EACH animal is compared to ALL the others ONCE
   for (auto aniIT = animals_.begin(); aniIT != animals_.end(); ++aniIT) {
     animal& ani = *aniIT.base()->get();
     ani.update();
@@ -353,10 +358,10 @@ void ground::update() {
         appendOffspring((sheep&)ani, (sheep&)secondeAni);
       }
 
-      if ((typeid(ani) != typeid(secondeAni)) &&
-          (typeid(ani) == typeid(wolf) || typeid(ani) == typeid(sheep)) &&
-          (typeid(secondeAni) == typeid(wolf) ||
-           typeid(secondeAni) == typeid(sheep))) {
+      // handle the wolf-sheep chase : - if a sheep is near to a wolf it run
+      // - if the wolf is on a sheep he's eaten
+      if ((typeid(ani) == typeid(wolf) && typeid(secondeAni) == typeid(sheep)) ||
+          (typeid(ani) == typeid(sheep) || typeid(secondeAni) == typeid(wolf))) {
         if (sqrt(pow(secondeAni.position_.x - ani.position_.x, 2) +
                  pow(secondeAni.position_.y - ani.position_.y, 2) * 1.0) <=
             200) {
