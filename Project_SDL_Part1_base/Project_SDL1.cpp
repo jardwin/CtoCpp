@@ -108,11 +108,23 @@ void animal::setSpeed(int newSpeed) { this->speed = newSpeed; }
 void animal::runAway(const animal& seconde) {
   auto degree = SDL_atan2(position_.y - seconde.position_.y,
                           position_.x - seconde.position_.x);
-  targetX = abs(position_.x + 150 * cos(degree * 180 / PI));
-  targetY = abs(position_.y + 150 * sin(degree * 180 / PI));
-  std::cout << "newTarget is = " << targetX << "," << targetY
-            << " and wolf is = " << seconde.position_.x << ","
-            << seconde.position_.y << "\n";
+  targetX = abs(position_.x + 100 * cos(-degree * 180 / PI));
+  targetY = abs(position_.y + 100 * sin(-degree * 180 / PI));
+  if (targetX < 0) {
+    targetX = 0;
+  }
+
+  if (targetX > frame_width - position_.w) {
+    targetX = frame_width - frame_boundary;
+  }
+
+  if (targetY < 0) {
+    targetY = 0;
+  }
+
+  if (targetY > frame_height - position_.h) {
+    targetY = frame_height - frame_boundary;
+  }
 }
 
 animal::animal(const std::string& file_path, SDL_Surface* window_surface_ptr) {
