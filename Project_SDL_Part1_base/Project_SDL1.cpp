@@ -314,7 +314,7 @@ ground::ground(SDL_Surface* window_surface_ptr) {
   animals_ = std::vector<std::shared_ptr<animal>>();
 }
 
-ground::~ground(){};
+ground::~ground() { SDL_FreeSurface(window_surface_ptr_); };
 
 void ground::add_animal(std::shared_ptr<animal> newAnimal) {
   animals_.push_back(newAnimal);
