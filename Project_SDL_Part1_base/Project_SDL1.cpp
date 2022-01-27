@@ -1,6 +1,3 @@
-// SDL_Test.cpp: Definiert den Einstiegspunkt f�r die Anwendung.
-//
-
 #include "Project_SDL1.h"
 
 #include <algorithm>
@@ -300,8 +297,6 @@ void shepherd_dog::move(const shepherd& master, double degree) {
     position_.y = 0;
   else if (position_.y > frame_height - position_.h)
     position_.y = frame_height - position_.h;
-
-  SDL_BlitScaled(image_ptr_, NULL, window_surface_ptr_, &position_);
 }
 
 // ---------------- ground class impl ----------------
