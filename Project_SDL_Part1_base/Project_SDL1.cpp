@@ -274,20 +274,30 @@ void shepherd::move(const SDL_Event& event, bool keys[322]) {
 
 // ---------------- shepherd_dog class impl ----------------
 
-shepherd_dog::shepherd_dog(SDL_Surface* window_surface_ptr)
+shepherd_dog::shepherd_dog(shepherd* master, SDL_Surface* window_surface_ptr)
     : animal("./media/shepherd_dog.png", window_surface_ptr) {
   window_surface_ptr_ = window_surface_ptr;
   position_.x = 131;
   position_.y = 131;
   position_.w = image_ptr_->w;
   position_.h = image_ptr_->h;
+  shepherd_master = master;
+  degree = 0.0;
 }
 
-void shepherd_dog::move(const shepherd& master, double degree) {
-  position_.x = abs(master.position_.x +
-                    (master.position_.w / 2) * cos(degree * 360 / PI));
-  position_.y = abs(master.position_.y +
-                    (master.position_.h / 2) * sin(degree * 360 / PI));
+void shepherd_dog::move() {
+  degree += 0.6;
+  if (degree >= 360.0) {
+    degree = 0.0;
+  }
+  std::cout << "the degre is : " << degree << "\n";
+
+  position_.x =
+      abs(shepherd_master->position_.x +
+          (shepherd_master->position_.w / 2) * cos(degree * 360 / PI));
+  position_.y =
+      abs(shepherd_master->position_.y +
+          (shepherd_master->position_.h / 2) * sin(degree * 360 / PI));
 
   if (position_.x < 0)
     position_.x = 0;
@@ -297,11 +307,9 @@ void shepherd_dog::move(const shepherd& master, double degree) {
     position_.y = 0;
   else if (position_.y > frame_height - position_.h)
     position_.y = frame_height - position_.h;
-}
+};
 
 // ---------------- ground class impl ----------------
-
-bool test = true;
 
 ground::ground(SDL_Surface* window_surface_ptr) {
   window_surface_ptr_ = window_surface_ptr;
@@ -416,8 +424,6 @@ application::application(unsigned n_sheep, unsigned n_wolf) {
 
   ground_ = std::make_unique<ground>(window_surface_ptr_);
 
-  ground_->add_animal(std::make_shared<shepherd_dog>(window_surface_ptr_));
-
   for (size_t i = 0; i < n_sheep; i++) {
     ground_->add_animal(std::make_shared<sheep>(window_surface_ptr_));
   }
@@ -433,14 +439,12 @@ application::~application() {
 
 int application::loop(unsigned period) {
   SDL_Rect windowsRect = SDL_Rect{0, 0, frame_width, frame_height};
-  shepherd player = shepherd(window_surface_ptr_);
-  shepherd_dog doggo = shepherd_dog(window_surface_ptr_);
+  shepherd* player = new shepherd(window_surface_ptr_);
+  ground_->add_animal(
+      std::make_shared<shepherd_dog>(player, window_surface_ptr_));
 
   bool keys[322] = {false};
   SDL_UpdateWindowSurface(window_ptr_);
-  // dirty... this is just to have a very tiny number and not make the doggo
-  // spin like mad
-  double degree = 0.0;
 
   while (period * 1000 >= SDL_GetTicks()) {
     SDL_FillRect(window_surface_ptr_, &windowsRect,
@@ -450,12 +454,7 @@ int application::loop(unsigned period) {
         window_event_.type == SDL_WINDOWEVENT &&
             window_event_.window.event == SDL_WINDOWEVENT_CLOSE)
       break;
-    degree += 0.0006;
-    if (degree >= 360.0) {
-      degree = 0.0;
-    }
-    player.move(window_event_, keys);
-    doggo.move(player, degree);
+    player->move(window_event_, keys);
     ground_->update();
     SDL_UpdateWindowSurface(window_ptr_);
     SDL_Delay(frame_time * 1000); // Pause execution for framerate milliseconds

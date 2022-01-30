@@ -52,7 +52,7 @@ public:
   void setSpeed(int newSpeed);
   void runAway(const animal&);
 
-  void move();
+  virtual void move();
   virtual void update();
   // todo: Animals move around, but in a different
   // fashion depending on which type of animal
@@ -100,9 +100,11 @@ private:
 class shepherd_dog : public animal {
 public:
   SDL_Surface* window_surface_ptr_;
-  shepherd_dog(SDL_Surface* window_surface_ptr);
+  shepherd* shepherd_master;
+  double degree;
+  shepherd_dog(shepherd* master, SDL_Surface* window_surface_ptr);
   ~shepherd_dog() {}
-  void move(const shepherd& master, double degree);
+  void move();
 
 private:
   SDL_Rect position_;
