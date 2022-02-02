@@ -286,11 +286,10 @@ shepherd_dog::shepherd_dog(shepherd* master, SDL_Surface* window_surface_ptr)
 }
 
 void shepherd_dog::move() {
-  degree += 0.6;
+  degree += 0.0006;
   if (degree >= 360.0) {
     degree = 0.0;
   }
-  std::cout << "the degre is : " << degree << "\n";
 
   position_.x =
       abs(shepherd_master->position_.x +
@@ -345,40 +344,14 @@ void ground::update() {
     ani.update();
     ani.draw();
 
-    // TODO : faire le chien qui chasse les loups..........
-    /*if(typeid(ani) == typeid(wolf)){
-      std::cout << "wolf" << std::endl;
-    }
-    if(typeid(ani) == typeid(sheep)){
-      std::cout << "sheep" << std::endl;
-    }
-    if(typeid(ani) == typeid(shepherd_dog)){
-      std::cout << "Dog" << std::endl;
-    }*/
-
     for (auto secondeIT = aniIT + 1; secondeIT < animals_.end(); ++secondeIT) {
       animal& secondeAni = *secondeIT.base()->get();
 
-      // collision between two sheep (hitbox start on top left and stop on the
-      // half of the image, to simulate one is inside other)
-      if ((ani.growingPerPourcent == max_growing &&
-           secondeAni.growingPerPourcent == max_growing) &&
-          (typeid(ani) == typeid(sheep) &&
-           typeid(secondeAni) == typeid(sheep)) &&
-          ani.isOnCouple(secondeAni)) {
-        appendOffspring((sheep&)ani, (sheep&)secondeAni);
-      }
-
-      // handle the wolf-sheep chase : - if a sheep is near to a wolf it run
-      // - if the wolf is on a sheep he's eaten
-      if ((typeid(ani) == typeid(wolf) &&
-           typeid(secondeAni) == typeid(sheep)) ||
-          (typeid(ani) == typeid(sheep) ||
-           typeid(secondeAni) == typeid(wolf))) {
-        if (sqrt(pow(secondeAni.position_.x - ani.position_.x, 2) +
-                 pow(secondeAni.position_.y - ani.position_.y, 2) * 1.0) <=
-            200) {
-          if (typeid(ani) == typeid(wolf)) {
+      if (typeid(ani) == typeid(wolf)) {
+        if (typeid(secondeAni) == typeid(sheep)) {
+          if (sqrt(pow(secondeAni.position_.x - ani.position_.x, 2) +
+                   pow(secondeAni.position_.y - ani.position_.y, 2) * 1.0) <=
+              200) {
             secondeAni.setSpeed(2);
             secondeAni.runAway(ani);
             if (sqrt(pow(secondeAni.position_.x - ani.position_.x, 2) +
@@ -387,20 +360,49 @@ void ground::update() {
               this->animals_.erase(secondeIT);
             }
           } else {
+            secondeAni.setSpeed(1);
+          }
+        } else if (typeid(secondeAni) == typeid(shepherd_dog)) {
+          if (sqrt(pow(secondeAni.position_.x - ani.position_.x, 2) +
+                   pow(secondeAni.position_.y - ani.position_.y, 2) * 1.0) <=
+              200) {
+            ani.setSpeed(2);
+            ani.runAway(secondeAni);
+          } else {
+            ani.setSpeed(1);
+          }
+        }
+      } else if (typeid(ani) == typeid(sheep)) {
+        if (typeid(secondeAni) == typeid(sheep)) {
+          if ((ani.growingPerPourcent == max_growing &&
+               secondeAni.growingPerPourcent == max_growing) &&
+              ani.isOnCouple(secondeAni)) {
+            appendOffspring((sheep&)ani, (sheep&)secondeAni);
+          }
+        } else if (typeid(secondeAni) == typeid(wolf)) {
+          if (sqrt(pow(secondeAni.position_.x - ani.position_.x, 2) +
+                   pow(secondeAni.position_.y - ani.position_.y, 2) * 1.0) <=
+              200) {
             ani.setSpeed(2);
             ani.runAway(secondeAni);
             if (sqrt(pow(secondeAni.position_.x - ani.position_.x, 2) +
                      pow(secondeAni.position_.y - ani.position_.y, 2) * 1.0) <=
                 secondeAni.position_.w / 2) {
               this->animals_.erase(aniIT);
-              break;
             }
-          }
-        } else {
-          if (typeid(ani) == typeid(wolf)) {
-            secondeAni.setSpeed(1);
           } else {
             ani.setSpeed(1);
+          }
+        }
+      } else if (typeid(ani) == typeid(shepherd_dog)) {
+        if (typeid(secondeAni) == typeid(wolf)) {
+          if (sqrt(pow(secondeAni.position_.x - ani.position_.x, 2) +
+                   pow(secondeAni.position_.y - ani.position_.y, 2) * 1.0) <=
+              200) {
+            secondeAni.setSpeed(2);
+            secondeAni.runAway(ani);
+          } else {
+            secondeAni.setSpeed(1);
           }
         }
       }

@@ -105,9 +105,6 @@ public:
   shepherd_dog(shepherd* master, SDL_Surface* window_surface_ptr);
   ~shepherd_dog() {}
   void move();
-
-private:
-  SDL_Rect position_;
 };
 
 // ------------------------- Ground class -------------------------
