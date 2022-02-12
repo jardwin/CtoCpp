@@ -1,5 +1,7 @@
 ﻿cmake_minimum_required (VERSION 3.0)
 project ("Project_SDL_sub")
+set(CMAKE_CXX_FLAGS "-fsanitize=address")
+
 
 IF(WIN32)
   message(STATUS "Building for windows")
