@@ -2,6 +2,7 @@
 
 #include <SDL.h>
 #include <SDL_image.h>
+#include <SDL_ttf.h>
 #include <iostream>
 #include <map>
 #include <memory>
@@ -130,6 +131,9 @@ public:
   void update();
   // todo: "refresh the screen": Move animals and draw them
   // Possibly other methods, depends on your implementation
+
+  // count the number of sheeps in animals vector
+  unsigned countSheep(unsigned nbSheep);
 };
 
 // ------------------------- Application class -------------------------
@@ -140,7 +144,11 @@ private:
   SDL_Window* window_ptr_;
   SDL_Surface* window_surface_ptr_;
   SDL_Event window_event_;
+  SDL_Surface* score_surface_ptr_;
+  SDL_Rect score_position_;
 
+  TTF_Font* font;
+  	
   std::unique_ptr<ground> ground_;
 
 public:

@@ -13,6 +13,10 @@ void init() {
   if (SDL_Init(SDL_INIT_TIMER | SDL_INIT_VIDEO) < 0)
     throw std::runtime_error("init():" + std::string(SDL_GetError()));
 
+  // Initialize SDL TTF
+  if (TTF_Init() < 0)
+    throw std::runtime_error("init():" + std::string(TTF_GetError()));
+
   // Initialize PNG loading
   int imgFlags = IMG_INIT_PNG;
   if (!(IMG_Init(imgFlags) & imgFlags))
@@ -26,7 +30,8 @@ SDL_Surface* load_image(const std::string& file_path) {
   if (!image_ptr_) {
     std::cout << "OOPS! The image " << file_path
               << " could not have been loaded" << std::endl;
-    std::cout << "Stopping application" << std::endl;
+    std::cout << "Stopping application" << std::endl;	
+    TTF_Quit();
     SDL_Quit();
     std::exit(EXIT_FAILURE);
   }
@@ -317,6 +322,16 @@ ground::ground(SDL_Surface* window_surface_ptr) {
 
 ground::~ground() { animals_.clear(); };
 
+unsigned ground::countSheep(unsigned nbSheep){
+  for (auto aniIT = animals_.begin(); aniIT != animals_.end(); ++aniIT) {
+  animal& ani = *aniIT.base()->get();
+    if (typeid(ani) == typeid(sheep)) {
+      nbSheep++;
+    }
+  }
+  return nbSheep;
+}
+
 void ground::add_animal(std::shared_ptr<animal> newAnimal) {
   animals_.push_back(newAnimal);
 }
@@ -335,8 +350,6 @@ void ground::appendOffspring(sheep& first, sheep& second) {
 }
 
 void ground::update() {
-  unsigned initSize = animals_.size();
-
   // we compare the current animal to the next one and see if an event occur
   // this mean EACH animal is compared to ALL the others ONCE
   for (auto aniIT = animals_.begin(); aniIT != animals_.end(); ++aniIT) {
@@ -422,7 +435,11 @@ application::application(unsigned n_sheep, unsigned n_wolf) {
                                  SDL_WINDOW_SHOWN         // flags - see below
   );
 
-  window_surface_ptr_ = SDL_GetWindowSurface(window_ptr_);
+  window_surface_ptr_ = SDL_GetWindowSurface(window_ptr_);	
+  font = TTF_OpenFont("media/NotoMono-Regular.ttf", 25);
+  if(font == nullptr){
+    throw std::runtime_error("could not load the font :" + std::string(TTF_GetError()));
+  }
 
   ground_ = std::make_unique<ground>(window_surface_ptr_);
 
@@ -447,8 +464,13 @@ int application::loop(unsigned period) {
 
   bool keys[322] = {false};
   SDL_UpdateWindowSurface(window_ptr_);
+  unsigned nbSheep = 0;
+  int secondsPassed = 0;
+  SDL_Color color = { 0, 0, 0 };
 
   while (period * 1000 >= SDL_GetTicks()) {
+    score_surface_ptr_ = TTF_RenderText_Solid(font, + std::to_string(nbSheep).c_str(), color);
+    score_position_ = { 5, 5, score_surface_ptr_->w, score_surface_ptr_->h };
     SDL_FillRect(window_surface_ptr_, &windowsRect,
                  SDL_MapRGB(window_surface_ptr_->format, 0, 255, 0));
     SDL_PollEvent(&window_event_);
@@ -458,9 +480,19 @@ int application::loop(unsigned period) {
       break;
     player->move(window_event_, keys);
     ground_->update();
+    SDL_BlitScaled(score_surface_ptr_, NULL, window_surface_ptr_, &score_position_);
     SDL_UpdateWindowSurface(window_ptr_);
     SDL_Delay(frame_time * 1000); // Pause execution for framerate milliseconds
+    // We use SDL_GetTicks() to know if one seconde has passed
+    if(SDL_GetTicks() / 1000 == secondsPassed + 1){
+      secondsPassed++;
+      nbSheep = ground_->countSheep(nbSheep);
+    }
+    SDL_FreeSurface(score_surface_ptr_);
   }
+
+  std::cout << "Your score is : " << std::to_string((float) nbSheep/secondsPassed) << std::endl;
+  TTF_CloseFont(font);
   return 1;
 }
 namespace {

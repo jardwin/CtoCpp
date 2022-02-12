@@ -23,6 +23,7 @@ int main(int argc, char* argv[]) {
 
   std::cout << "Exiting application with code " << retval << std::endl;
 
+  TTF_Quit();
   SDL_Quit();
 
   return retval;
