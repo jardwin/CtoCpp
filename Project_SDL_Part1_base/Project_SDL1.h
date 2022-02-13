@@ -12,6 +12,7 @@
 #define PI 3.14159265
 
 // Defintions
+constexpr int number_of_dogs = 2;
 constexpr double frame_rate = 60.0; // refresh rate
 constexpr double frame_time = 1. / frame_rate;
 constexpr unsigned frame_width = 1400 / 2; // Width of window in pixel
@@ -81,6 +82,7 @@ class wolf : public animal {
 public:
   wolf(SDL_Surface* window_surface_ptr);
   ~wolf() {}
+  void setTarget(const animal& target);
   // implement functions that are purely virtual in base class
 };
 
@@ -102,10 +104,17 @@ class shepherd_dog : public animal {
 public:
   SDL_Surface* window_surface_ptr_;
   shepherd* shepherd_master;
-  double degree;
+  float degree;
+  // variable determinating the "speed" of the dogs so they are not glued
+  // altogether
+  float degreeIncrement = getRandomAngle();
+
   shepherd_dog(shepherd* master, SDL_Surface* window_surface_ptr);
   ~shepherd_dog() {}
   void move();
+
+private:
+  float getRandomAngle();
 };
 
 // ------------------------- Ground class -------------------------
@@ -145,10 +154,10 @@ private:
   SDL_Surface* window_surface_ptr_;
   SDL_Event window_event_;
   SDL_Surface* score_surface_ptr_;
-  SDL_Rect score_position_;
+  SDL_Rect* score_position_;
 
   TTF_Font* font;
-  	
+
   std::unique_ptr<ground> ground_;
 
 public:

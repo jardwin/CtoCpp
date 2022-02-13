@@ -30,7 +30,7 @@ SDL_Surface* load_image(const std::string& file_path) {
   if (!image_ptr_) {
     std::cout << "OOPS! The image " << file_path
               << " could not have been loaded" << std::endl;
-    std::cout << "Stopping application" << std::endl;	
+    std::cout << "Stopping application" << std::endl;
     TTF_Quit();
     SDL_Quit();
     std::exit(EXIT_FAILURE);
@@ -234,6 +234,11 @@ wolf::wolf(SDL_Surface* window_surface_ptr)
   this->growingPerPourcent = 100;
 }
 
+void wolf::setTarget(const animal& target) {
+  targetX = target.position_.x;
+  targetY = target.position_.y;
+}
+
 // ---------------- shepherd class impl ----------------
 
 shepherd::shepherd(SDL_Surface* window_surface_ptr) { // Ajout du berger
@@ -279,6 +284,13 @@ void shepherd::move(const SDL_Event& event, bool keys[322]) {
 
 // ---------------- shepherd_dog class impl ----------------
 
+float shepherd_dog::getRandomAngle() {
+  std::random_device rand_dev;
+  std::mt19937 generator(rand_dev());
+  std::uniform_real_distribution<> distr(0.0004, 0.0009);
+  return distr(generator);
+}
+
 shepherd_dog::shepherd_dog(shepherd* master, SDL_Surface* window_surface_ptr)
     : animal("./media/shepherd_dog.png", window_surface_ptr) {
   window_surface_ptr_ = window_surface_ptr;
@@ -291,7 +303,7 @@ shepherd_dog::shepherd_dog(shepherd* master, SDL_Surface* window_surface_ptr)
 }
 
 void shepherd_dog::move() {
-  degree += 0.0006;
+  degree += degreeIncrement;
   if (degree >= 360.0) {
     degree = 0.0;
   }
@@ -322,9 +334,9 @@ ground::ground(SDL_Surface* window_surface_ptr) {
 
 ground::~ground() { animals_.clear(); };
 
-unsigned ground::countSheep(unsigned nbSheep){
+unsigned ground::countSheep(unsigned nbSheep) {
   for (auto aniIT = animals_.begin(); aniIT != animals_.end(); ++aniIT) {
-  animal& ani = *aniIT.base()->get();
+    animal& ani = *aniIT.base()->get();
     if (typeid(ani) == typeid(sheep)) {
       nbSheep++;
     }
@@ -364,6 +376,11 @@ void ground::update() {
         if (typeid(secondeAni) == typeid(sheep)) {
           if (sqrt(pow(secondeAni.position_.x - ani.position_.x, 2) +
                    pow(secondeAni.position_.y - ani.position_.y, 2) * 1.0) <=
+              300) {
+            ((wolf&)ani).setTarget(secondeAni);
+          }
+          if (sqrt(pow(secondeAni.position_.x - ani.position_.x, 2) +
+                   pow(secondeAni.position_.y - ani.position_.y, 2) * 1.0) <=
               200) {
             secondeAni.setSpeed(2);
             secondeAni.runAway(ani);
@@ -371,6 +388,7 @@ void ground::update() {
                      pow(secondeAni.position_.y - ani.position_.y, 2) * 1.0) <=
                 secondeAni.position_.w / 2) {
               this->animals_.erase(secondeIT);
+              break;
             }
           } else {
             secondeAni.setSpeed(1);
@@ -395,6 +413,11 @@ void ground::update() {
         } else if (typeid(secondeAni) == typeid(wolf)) {
           if (sqrt(pow(secondeAni.position_.x - ani.position_.x, 2) +
                    pow(secondeAni.position_.y - ani.position_.y, 2) * 1.0) <=
+              300) {
+            ((wolf&)secondeAni).setTarget(ani);
+          }
+          if (sqrt(pow(secondeAni.position_.x - ani.position_.x, 2) +
+                   pow(secondeAni.position_.y - ani.position_.y, 2) * 1.0) <=
               200) {
             ani.setSpeed(2);
             ani.runAway(secondeAni);
@@ -402,6 +425,7 @@ void ground::update() {
                      pow(secondeAni.position_.y - ani.position_.y, 2) * 1.0) <=
                 secondeAni.position_.w / 2) {
               this->animals_.erase(aniIT);
+              break;
             }
           } else {
             ani.setSpeed(1);
@@ -435,10 +459,11 @@ application::application(unsigned n_sheep, unsigned n_wolf) {
                                  SDL_WINDOW_SHOWN         // flags - see below
   );
 
-  window_surface_ptr_ = SDL_GetWindowSurface(window_ptr_);	
+  window_surface_ptr_ = SDL_GetWindowSurface(window_ptr_);
   font = TTF_OpenFont("media/NotoMono-Regular.ttf", 25);
-  if(font == nullptr){
-    throw std::runtime_error("could not load the font :" + std::string(TTF_GetError()));
+  if (font == nullptr) {
+    throw std::runtime_error("could not load the font :" +
+                             std::string(TTF_GetError()));
   }
 
   ground_ = std::make_unique<ground>(window_surface_ptr_);
@@ -453,24 +478,32 @@ application::application(unsigned n_sheep, unsigned n_wolf) {
 
 application::~application() {
   // Close and destroy the window
+  SDL_FreeSurface(score_surface_ptr_);
   SDL_DestroyWindow(window_ptr_);
 }
 
 int application::loop(unsigned period) {
   SDL_Rect windowsRect = SDL_Rect{0, 0, frame_width, frame_height};
-  shepherd* player = new shepherd(window_surface_ptr_);
-  ground_->add_animal(
-      std::make_shared<shepherd_dog>(player, window_surface_ptr_));
+  std::unique_ptr<shepherd> player =
+      std::make_unique<shepherd>(window_surface_ptr_);
+  for (int i = 0; i < number_of_dogs; i++){
+    ground_->add_animal(
+        std::make_shared<shepherd_dog>(player.get(), window_surface_ptr_));
+  }
 
   bool keys[322] = {false};
   SDL_UpdateWindowSurface(window_ptr_);
   unsigned nbSheep = 0;
-  int secondsPassed = 0;
-  SDL_Color color = { 0, 0, 0 };
+  unsigned secondsPassed = 1;
+  SDL_Color color = {0, 0, 0};
+  score_surface_ptr_ = TTF_RenderText_Solid(
+      font, std::to_string(nbSheep / secondsPassed).c_str(), color);
+  score_position_ =
+      new SDL_Rect{5, 5, score_surface_ptr_->w, score_surface_ptr_->h};
 
   while (period * 1000 >= SDL_GetTicks()) {
-    score_surface_ptr_ = TTF_RenderText_Solid(font, + std::to_string(nbSheep).c_str(), color);
-    score_position_ = { 5, 5, score_surface_ptr_->w, score_surface_ptr_->h };
+    score_surface_ptr_ = TTF_RenderText_Solid(
+        font, std::to_string(nbSheep / secondsPassed).c_str(), color);
     SDL_FillRect(window_surface_ptr_, &windowsRect,
                  SDL_MapRGB(window_surface_ptr_->format, 0, 255, 0));
     SDL_PollEvent(&window_event_);
@@ -480,19 +513,20 @@ int application::loop(unsigned period) {
       break;
     player->move(window_event_, keys);
     ground_->update();
-    SDL_BlitScaled(score_surface_ptr_, NULL, window_surface_ptr_, &score_position_);
+    SDL_BlitScaled(score_surface_ptr_, NULL, window_surface_ptr_,
+                   score_position_);
     SDL_UpdateWindowSurface(window_ptr_);
     SDL_Delay(frame_time * 1000); // Pause execution for framerate milliseconds
     // We use SDL_GetTicks() to know if one seconde has passed
-    if(SDL_GetTicks() / 1000 == secondsPassed + 1){
+    if (SDL_GetTicks() / 1000 == secondsPassed + 1) {
       secondsPassed++;
       nbSheep = ground_->countSheep(nbSheep);
     }
-    SDL_FreeSurface(score_surface_ptr_);
   }
-
-  std::cout << "Your score is : " << std::to_string((float) nbSheep/secondsPassed) << std::endl;
   TTF_CloseFont(font);
+  delete score_position_;
+  std::cout << "Your score is : "
+            << std::to_string((float)nbSheep / secondsPassed) << std::endl;
   return 1;
 }
 namespace {
