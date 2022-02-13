@@ -286,6 +286,13 @@ void shepherd::move(const SDL_Event& event, bool keys[322]) {
 
 // ---------------- shepherd_dog class impl ----------------
 
+float shepherd_dog::getRandomAngle() {
+  std::random_device rand_dev;
+  std::mt19937 generator(rand_dev());
+  std::uniform_real_distribution<> distr(0.0004, 0.0009);
+  return distr(generator);
+}
+
 shepherd_dog::shepherd_dog(std::shared_ptr<shepherd>& master,
                            SDL_Surface* window_surface_ptr)
     : animal("./media/shepherd_dog.png", window_surface_ptr) {
@@ -299,7 +306,7 @@ shepherd_dog::shepherd_dog(std::shared_ptr<shepherd>& master,
 }
 
 void shepherd_dog::move() {
-  degree += 0.0006;
+  degree += degreeIncrement;
   if (degree >= 360.0) {
     degree = 0.0;
   }
@@ -486,8 +493,10 @@ int application::loop(unsigned period) {
   SDL_Rect windowsRect = SDL_Rect{0, 0, frame_width, frame_height};
   std::shared_ptr<shepherd> player =
       std::make_shared<shepherd>(window_surface_ptr_);
-  ground_->add_animal(
-      std::make_shared<shepherd_dog>(player, window_surface_ptr_));
+  for (int i = 0; i < number_of_dogs; i++) {
+    ground_->add_animal(
+        std::make_shared<shepherd_dog>(player, window_surface_ptr_));
+  }
 
   bool keys[322] = {false};
   SDL_UpdateWindowSurface(window_ptr_);

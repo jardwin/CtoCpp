@@ -12,6 +12,7 @@
 #define PI 3.14159265
 
 // Defintions
+constexpr int number_of_dogs = 2;
 constexpr double frame_rate = 60.0; // refresh rate
 constexpr double frame_time = 1. / frame_rate;
 constexpr unsigned frame_width = 1400 / 2; // Width of window in pixel
@@ -103,11 +104,18 @@ class shepherd_dog : public animal {
 public:
   SDL_Surface* window_surface_ptr_;
   std::shared_ptr<shepherd> shepherd_master;
-  double degree;
+  float degree;
+  // variable determinating the "speed" of the dogs so they are not glued
+  // altogether
+  float degreeIncrement = getRandomAngle();
+
   shepherd_dog(std::shared_ptr<shepherd>& master,
                SDL_Surface* window_surface_ptr);
   ~shepherd_dog() {}
   void move();
+
+private:
+  float getRandomAngle();
 };
 
 // ------------------------- Ground class -------------------------
