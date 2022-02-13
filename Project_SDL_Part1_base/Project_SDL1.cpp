@@ -306,7 +306,7 @@ float shepherd_dog::getRandomAngle() {
 }
 
 shepherd_dog::shepherd_dog(std::shared_ptr<shepherd>& master,
-                           SDL_Surface* window_surface_ptr)
+                           SDL_Surface* window_surface_ptr, SDL_Event& event)
     : animal("./media/shepherd_dog.png", window_surface_ptr) {
   window_surface_ptr_ = window_surface_ptr;
   position_.x = 131;
@@ -315,29 +315,71 @@ shepherd_dog::shepherd_dog(std::shared_ptr<shepherd>& master,
   position_.h = image_ptr_->h;
   shepherd_master = master;
   degree = 0.0;
+  selected = false;
+  inOrder = false;
+  mouse_event = &event;
 }
 
 void shepherd_dog::move() {
-  degree += degreeIncrement;
-  if (degree >= 360.0) {
-    degree = 0.0;
+
+  if (mouse_event->type == SDL_MOUSEBUTTONDOWN) {
+    if (selected) {
+      targetX = mouse_event->button.x;
+      targetY = mouse_event->button.y;
+      inOrder = true;
+    } else {
+      if (mouse_event->button.x >= position_.x &&
+          mouse_event->button.x <= position_.x + position_.w &&
+          mouse_event->button.y >= position_.y &&
+          mouse_event->button.y <= position_.y + position_.h) {
+        selected = true;
+      }
+    }
   }
 
-  position_.x =
-      abs(shepherd_master->position_.x +
-          (shepherd_master->position_.w / 2) * cos(degree * 360 / PI));
-  position_.y =
-      abs(shepherd_master->position_.y +
-          (shepherd_master->position_.h / 2) * sin(degree * 360 / PI));
+  if (inOrder) {
+    if (isOnTarget()) {
+      targetX = shepherd_master->position_.x;
+      targetY = shepherd_master->position_.y;
+    }
+    if (position_.x > targetX) {
+      position_.x -= speed;
+    } else if (position_.x < targetX) {
+      position_.x += speed;
+    }
+    if (position_.y > targetY) {
+      position_.y -= speed;
+    } else if (position_.y < targetY) {
+      position_.y += speed;
+    }
+    if (position_.x == shepherd_master->position_.x &&
+        position_.y == shepherd_master->position_.y) {
+      inOrder = false;
+      selected = false;
+    }
+  } else {
 
-  if (position_.x < 0)
-    position_.x = 0;
-  else if (position_.x > frame_width - position_.w)
-    position_.x = frame_width - position_.w;
-  if (position_.y < 0)
-    position_.y = 0;
-  else if (position_.y > frame_height - position_.h)
-    position_.y = frame_height - position_.h;
+    degree += degreeIncrement;
+    if (degree >= 360.0) {
+      degree = 0.0;
+    }
+
+    position_.x =
+        abs(shepherd_master->position_.x +
+            (shepherd_master->position_.w / 2) * cos(degree * 360 / PI));
+    position_.y =
+        abs(shepherd_master->position_.y +
+            (shepherd_master->position_.h / 2) * sin(degree * 360 / PI));
+
+    if (position_.x < 0)
+      position_.x = 0;
+    else if (position_.x > frame_width - position_.w)
+      position_.x = frame_width - position_.w;
+    if (position_.y < 0)
+      position_.y = 0;
+    else if (position_.y > frame_height - position_.h)
+      position_.y = frame_height - position_.h;
+  }
 };
 
 // ---------------- ground class impl ----------------
@@ -508,8 +550,8 @@ int application::loop(unsigned period) {
   std::shared_ptr<shepherd> player =
       std::make_shared<shepherd>(window_surface_ptr_);
   for (int i = 0; i < number_of_dogs; i++) {
-    ground_->add_animal(
-        std::make_shared<shepherd_dog>(player, window_surface_ptr_));
+    ground_->add_animal(std::make_shared<shepherd_dog>(
+        player, window_surface_ptr_, window_event_));
   }
 
   bool keys[322] = {false};

@@ -106,21 +106,24 @@ private:
 
 // ------------------------- Shepherd dog class -------------------------
 class shepherd_dog : public animal {
+private:
+  bool selected;
+  bool inOrder;
+  float getRandomAngle();
+
 public:
   SDL_Surface* window_surface_ptr_;
   std::shared_ptr<shepherd> shepherd_master;
+  SDL_Event* mouse_event;
   float degree;
   // variable determinating the "speed" of the dogs so they are not glued
   // altogether
   float degreeIncrement = getRandomAngle();
 
   shepherd_dog(std::shared_ptr<shepherd>& master,
-               SDL_Surface* window_surface_ptr);
+               SDL_Surface* window_surface_ptr, SDL_Event& event);
   ~shepherd_dog() {}
   void move();
-
-private:
-  float getRandomAngle();
 };
 
 // ------------------------- Ground class -------------------------
