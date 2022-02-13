@@ -508,15 +508,13 @@ int application::loop(unsigned period) {
   unsigned secondsPassed = 1;
   float score = 0;
   SDL_Color color = {0, 0, 0};
-  score_surface_ptr_ = TTF_RenderText_Solid(
-      font, std::to_string(score).c_str(), color);
-  score_position_ =
-      new SDL_Rect{5, 5, score_surface_ptr_->w, score_surface_ptr_->h};
 
   while (period * 1000 >= SDL_GetTicks()) {
     score = nbSheep / secondsPassed;
     score_surface_ptr_ = TTF_RenderText_Solid(
         font, std::to_string(score).c_str(), color);
+    score_position_ =
+      new SDL_Rect{5, 5, score_surface_ptr_->w, score_surface_ptr_->h};
     SDL_FillRect(window_surface_ptr_, &windowsRect,
                  SDL_MapRGB(window_surface_ptr_->format, 0, 255, 0));
     SDL_PollEvent(&window_event_);
@@ -535,9 +533,13 @@ int application::loop(unsigned period) {
       secondsPassed++;
       nbSheep = ground_->countSheep(nbSheep);
     }
+    delete score_position_;
+  }
+  // if we quit the program by clicking, make sure we released the pointer
+  if(score_position_ != nullptr){
+    delete score_position_;
   }
   TTF_CloseFont(font);
-  delete score_position_;
   std::cout << "Your score is : "
             << std::to_string(score) << std::endl;
   return 1;
