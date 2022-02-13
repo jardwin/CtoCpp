@@ -23,6 +23,8 @@ constexpr unsigned frame_boundary = 100;
 
 constexpr unsigned max_growing = 100;
 
+constexpr unsigned seconde_to_wolf_die = 5;
+
 // Helper function to initialize SDL
 void init();
 
@@ -83,7 +85,9 @@ class wolf : public animal {
 public:
   wolf(SDL_Surface* window_surface_ptr);
   ~wolf() {}
+  unsigned lastEatMs;
   void setTarget(std::shared_ptr<animal>& target);
+  bool hasEat();
   // implement functions that are purely virtual in base class
 };
 
@@ -157,7 +161,7 @@ private:
   SDL_Surface* window_surface_ptr_;
   SDL_Event window_event_;
   SDL_Surface* score_surface_ptr_;
-  SDL_Rect* score_position_;
+  SDL_Rect score_position_;
 
   TTF_Font* font;
 

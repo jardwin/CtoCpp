@@ -248,6 +248,10 @@ void wolf::setTarget(std::shared_ptr<animal>& target) {
   }
 }
 
+bool wolf::hasEat() {
+  return SDL_GetTicks() - lastEatMs > seconde_to_wolf_die * 1000;
+}
+
 // ---------------- shepherd class impl ----------------
 
 shepherd::shepherd(SDL_Surface* window_surface_ptr) { // Ajout du berger
@@ -374,82 +378,87 @@ void ground::update() {
   // this mean EACH animal is compared to ALL the others ONCE
   unsigned cmp = 0;
   for (auto aniIT = animals_.begin() + cmp; aniIT != animals_.end(); ++aniIT) {
-    animal& ani = *aniIT.base()->get();
-    ani.update();
-    ani.draw();
+    std::shared_ptr<animal> ani = *aniIT;
+    ani->update();
+    ani->draw();
 
     for (auto secondeIT = aniIT + 1; secondeIT < animals_.end(); ++secondeIT) {
-      animal& secondeAni = *secondeIT.base()->get();
+      std::shared_ptr<animal> secondeAni = *secondeIT;
 
-      if (typeid(ani) == typeid(wolf)) {
-        if (typeid(secondeAni) == typeid(sheep)) {
-          if (sqrt(pow(secondeAni.position_.x - ani.position_.x, 2) +
-                   pow(secondeAni.position_.y - ani.position_.y, 2) * 1.0) <=
+      if (typeid(*ani) == typeid(wolf)) {
+        if (((wolf&)*ani).hasEat()) {
+          aniIT = this->animals_.erase(aniIT);
+        }
+        if (typeid(*secondeAni) == typeid(sheep)) {
+          if (sqrt(pow(secondeAni->position_.x - ani->position_.x, 2) +
+                   pow(secondeAni->position_.y - ani->position_.y, 2) * 1.0) <=
               300) {
-            ((wolf&)ani).setTarget(*secondeIT);
+            ((wolf&)*ani).setTarget(secondeAni);
           }
-          if (sqrt(pow(secondeAni.position_.x - ani.position_.x, 2) +
-                   pow(secondeAni.position_.y - ani.position_.y, 2) * 1.0) <=
+          if (sqrt(pow(secondeAni->position_.x - ani->position_.x, 2) +
+                   pow(secondeAni->position_.y - ani->position_.y, 2) * 1.0) <=
               200) {
-            secondeAni.setSpeed(2);
-            secondeAni.runAway(*aniIT);
-            if (sqrt(pow(secondeAni.position_.x - ani.position_.x, 2) +
-                     pow(secondeAni.position_.y - ani.position_.y, 2) * 1.0) <=
-                secondeAni.position_.w / 2) {
-              this->animals_.erase(secondeIT);
+            secondeAni->setSpeed(2);
+            secondeAni->runAway(*aniIT);
+            if (sqrt(pow(secondeAni->position_.x - ani->position_.x, 2) +
+                     pow(secondeAni->position_.y - ani->position_.y, 2) *
+                         1.0) <= secondeAni->position_.w / 2) {
+              ((wolf&)*ani).lastEatMs = SDL_GetTicks();
+              secondeIT = this->animals_.erase(secondeIT);
               break;
             }
           } else {
-            secondeAni.setSpeed(1);
+            secondeAni->setSpeed(1);
           }
-        } else if (typeid(secondeAni) == typeid(shepherd_dog)) {
-          if (sqrt(pow(secondeAni.position_.x - ani.position_.x, 2) +
-                   pow(secondeAni.position_.y - ani.position_.y, 2) * 1.0) <=
+        } else if (typeid(*secondeAni) == typeid(shepherd_dog)) {
+          if (sqrt(pow(secondeAni->position_.x - ani->position_.x, 2) +
+                   pow(secondeAni->position_.y - ani->position_.y, 2) * 1.0) <=
               200) {
-            ani.setSpeed(2);
-            ani.runAway(*secondeIT);
+            ani->setSpeed(2);
+            ani->runAway(*secondeIT);
           } else {
-            ani.setSpeed(1);
+            ani->setSpeed(1);
           }
         }
-      } else if (typeid(ani) == typeid(sheep)) {
+      } else if (typeid(*ani) == typeid(sheep)) {
         if (typeid(secondeAni) == typeid(sheep)) {
-          if ((ani.growingPerPourcent == max_growing &&
-               secondeAni.growingPerPourcent == max_growing) &&
-              ani.isOnCouple(*secondeIT)) {
+          if ((ani->growingPerPourcent == max_growing &&
+               secondeAni->growingPerPourcent == max_growing) &&
+              ani->isOnCouple(*secondeIT)) {
             appendOffspring(std::static_pointer_cast<sheep>(*aniIT),
                             std::static_pointer_cast<sheep>(*secondeIT));
           }
-        } else if (typeid(secondeAni) == typeid(wolf)) {
-          if (sqrt(pow(secondeAni.position_.x - ani.position_.x, 2) +
-                   pow(secondeAni.position_.y - ani.position_.y, 2) * 1.0) <=
+        } else if (typeid(*secondeAni) == typeid(wolf)) {
+          if (sqrt(pow(secondeAni->position_.x - ani->position_.x, 2) +
+                   pow(secondeAni->position_.y - ani->position_.y, 2) * 1.0) <=
               300) {
-            ((wolf&)secondeAni).setTarget(*aniIT);
+            ((wolf&)*secondeAni).setTarget(ani);
           }
-          if (sqrt(pow(secondeAni.position_.x - ani.position_.x, 2) +
-                   pow(secondeAni.position_.y - ani.position_.y, 2) * 1.0) <=
+          if (sqrt(pow(secondeAni->position_.x - ani->position_.x, 2) +
+                   pow(secondeAni->position_.y - ani->position_.y, 2) * 1.0) <=
               200) {
-            ani.setSpeed(2);
-            ani.runAway(*secondeIT);
-            if (sqrt(pow(secondeAni.position_.x - ani.position_.x, 2) +
-                     pow(secondeAni.position_.y - ani.position_.y, 2) * 1.0) <=
-                secondeAni.position_.w / 2) {
-              this->animals_.erase(aniIT);
+            ani->setSpeed(2);
+            ani->runAway(*secondeIT);
+            if (sqrt(pow(secondeAni->position_.x - ani->position_.x, 2) +
+                     pow(secondeAni->position_.y - ani->position_.y, 2) *
+                         1.0) <= secondeAni->position_.w / 2) {
+              ((wolf&)*secondeAni).lastEatMs = SDL_GetTicks();
+              aniIT = this->animals_.erase(aniIT);
               break;
             }
           } else {
-            ani.setSpeed(1);
+            ani->setSpeed(1);
           }
         }
-      } else if (typeid(ani) == typeid(shepherd_dog)) {
-        if (typeid(secondeAni) == typeid(wolf)) {
-          if (sqrt(pow(secondeAni.position_.x - ani.position_.x, 2) +
-                   pow(secondeAni.position_.y - ani.position_.y, 2) * 1.0) <=
+      } else if (typeid(*ani) == typeid(shepherd_dog)) {
+        if (typeid(*secondeAni) == typeid(wolf)) {
+          if (sqrt(pow(secondeAni->position_.x - ani->position_.x, 2) +
+                   pow(secondeAni->position_.y - ani->position_.y, 2) * 1.0) <=
               200) {
-            secondeAni.setSpeed(2);
-            secondeAni.runAway(*aniIT);
+            secondeAni->setSpeed(2);
+            secondeAni->runAway(*aniIT);
           } else {
-            secondeAni.setSpeed(1);
+            secondeAni->setSpeed(1);
           }
         }
       }
@@ -507,14 +516,13 @@ int application::loop(unsigned period) {
   unsigned nbSheep = 0;
   unsigned secondsPassed = 1;
   SDL_Color color = {0, 0, 0};
-  score_surface_ptr_ = TTF_RenderText_Solid(
-      font, std::to_string(nbSheep / secondsPassed).c_str(), color);
-  score_position_ =
-      new SDL_Rect{5, 5, score_surface_ptr_->w, score_surface_ptr_->h};
 
   while (period * 1000 >= SDL_GetTicks()) {
     score_surface_ptr_ = TTF_RenderText_Solid(
-        font, std::to_string(nbSheep / secondsPassed).c_str(), color);
+        font, std::to_string((float)(nbSheep / secondsPassed)).c_str(), color);
+    score_position_ =
+        SDL_Rect{5, 5, score_surface_ptr_->w, score_surface_ptr_->h};
+
     SDL_FillRect(window_surface_ptr_, &windowsRect,
                  SDL_MapRGB(window_surface_ptr_->format, 0, 255, 0));
     SDL_PollEvent(&window_event_);
@@ -525,7 +533,7 @@ int application::loop(unsigned period) {
     player->move(window_event_, keys);
     ground_->update();
     SDL_BlitScaled(score_surface_ptr_, NULL, window_surface_ptr_,
-                   score_position_);
+                   &score_position_);
     SDL_UpdateWindowSurface(window_ptr_);
     SDL_Delay(frame_time * 1000); // Pause execution for framerate milliseconds
     // We use SDL_GetTicks() to know if one seconde has passed
@@ -535,7 +543,7 @@ int application::loop(unsigned period) {
     }
   }
   TTF_CloseFont(font);
-  delete score_position_;
+
   std::cout << "Your score is : "
             << std::to_string((float)nbSheep / secondsPassed) << std::endl;
   return 1;
