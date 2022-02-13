@@ -178,6 +178,13 @@ sheep::sheep(SDL_Surface* window_surface_ptr)
 
   this->isFemal = getRandomSex();
 }
+
+sheep::sheep(SDL_Surface* window_surface_ptr, int x, int y)
+    : sheep(window_surface_ptr) {
+  position_.x = x;
+  position_.y = y;
+  isChild();
+}
 void sheep::growingUp() {
   unsigned interval = SDL_GetTicks() - this->birthday;
   if (interval % 4 == 0) {
@@ -348,18 +355,15 @@ unsigned ground::countSheep(unsigned nbSheep) {
 }
 
 void ground::add_animal(std::shared_ptr<animal> newAnimal) {
-  animals_.push_back(newAnimal);
+  animals_.push_back(std::move(newAnimal));
 }
 
 void ground::appendOffspring(const std::shared_ptr<sheep>& first,
                              const std::shared_ptr<sheep>& second) {
   if ((first->isFemal && !second->isFemal) ||
       (!first->isFemal && second->isFemal)) {
-    auto child = std::make_shared<sheep>(this->window_surface_ptr_);
-    child->isChild();
-    child->position_.x = first->position_.x;
-    child->position_.y = first->position_.y;
-    this->add_animal(child);
+    this->add_animal(std::make_shared<sheep>(
+        this->window_surface_ptr_, first->position_.x, first->position_.y));
     first->growingPerPourcent++;
     second->growingPerPourcent++;
   }

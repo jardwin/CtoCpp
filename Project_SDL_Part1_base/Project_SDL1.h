@@ -70,6 +70,7 @@ private:
 public:
   bool isFemal;
   sheep(SDL_Surface* window_surface_ptr);
+  sheep(SDL_Surface* window_surface_ptr, int x, int y);
   ~sheep() {}
   void isChild();
   void update();
