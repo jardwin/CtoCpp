@@ -239,6 +239,7 @@ wolf::wolf(SDL_Surface* window_surface_ptr)
   this->targetY = getRandomTarget(100, DIRECTION::VERTICAL);
 
   this->growingPerPourcent = 100;
+  this->lastEatMs = SDL_GetTicks();
 }
 
 void wolf::setTarget(std::shared_ptr<animal>& target) {
@@ -515,9 +516,11 @@ int application::loop(unsigned period) {
   SDL_UpdateWindowSurface(window_ptr_);
   unsigned nbSheep = 0;
   unsigned secondsPassed = 1;
+  float score = 0;
   SDL_Color color = {0, 0, 0};
 
   while (period * 1000 >= SDL_GetTicks()) {
+    score = nbSheep / secondsPassed;
     score_surface_ptr_ = TTF_RenderText_Solid(
         font, std::to_string((float)(nbSheep / secondsPassed)).c_str(), color);
     score_position_ =
@@ -543,9 +546,7 @@ int application::loop(unsigned period) {
     }
   }
   TTF_CloseFont(font);
-
-  std::cout << "Your score is : "
-            << std::to_string((float)nbSheep / secondsPassed) << std::endl;
+  std::cout << "Your score is : " << std::to_string(score) << std::endl;
   return 1;
 }
 namespace {
