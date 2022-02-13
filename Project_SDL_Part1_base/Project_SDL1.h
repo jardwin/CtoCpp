@@ -48,10 +48,10 @@ public:
   animal(const std::string& file_path, SDL_Surface* window_surface_ptr);
   ~animal();
 
-  bool isOnCouple(const animal&);
+  bool isOnCouple(const std::shared_ptr<animal>&);
   void draw();
   void setSpeed(int newSpeed);
-  void runAway(const animal&);
+  void runAway(const std::shared_ptr<animal>&);
 
   virtual void move();
   virtual void update();
@@ -81,7 +81,7 @@ class wolf : public animal {
 public:
   wolf(SDL_Surface* window_surface_ptr);
   ~wolf() {}
-  void setTarget(const animal& target);
+  void setTarget(std::shared_ptr<animal>& target);
   // implement functions that are purely virtual in base class
 };
 
@@ -102,9 +102,10 @@ private:
 class shepherd_dog : public animal {
 public:
   SDL_Surface* window_surface_ptr_;
-  shepherd* shepherd_master;
+  std::shared_ptr<shepherd> shepherd_master;
   double degree;
-  shepherd_dog(shepherd* master, SDL_Surface* window_surface_ptr);
+  shepherd_dog(std::shared_ptr<shepherd>& master,
+               SDL_Surface* window_surface_ptr);
   ~shepherd_dog() {}
   void move();
 };
@@ -126,7 +127,8 @@ public:
   // Add an animal
   void add_animal(std::shared_ptr<animal> newAnimal);
 
-  void appendOffspring(sheep& first, sheep& second);
+  void appendOffspring(const std::shared_ptr<sheep>& first,
+                       const std::shared_ptr<sheep>& second);
 
   // "refresh the screen": Move animals and draw them
   void update();

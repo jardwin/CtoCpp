@@ -98,22 +98,22 @@ bool animal::isOnTarget() {
          (targetY - speed <= position_.y && position_.y <= targetY + speed);
 }
 
-bool animal::isOnCouple(const animal& secondeAni) {
+bool animal::isOnCouple(const std::shared_ptr<animal>& secondeAni) {
   float distance =
-      sqrt(pow(secondeAni.position_.x - this->position_.x, 2) +
-           pow(secondeAni.position_.y - this->position_.y, 2) * 1.0);
-  return distance <= (secondeAni.position_.w / 2);
+      sqrt(pow(secondeAni->position_.x - this->position_.x, 2) +
+           pow(secondeAni->position_.y - this->position_.y, 2) * 1.0);
+  return distance <= (secondeAni->position_.w / 2);
 }
 
 void animal::setSpeed(int newSpeed) { this->speed = newSpeed; }
 
-void animal::runAway(const animal& seconde) {
-  auto degree = SDL_atan2(position_.y - seconde.position_.y,
-                          position_.x - seconde.position_.x);
+void animal::runAway(const std::shared_ptr<animal>& seconde) {
+  auto degree = SDL_atan2(position_.y - seconde->position_.y,
+                          position_.x - seconde->position_.x);
   targetX = abs(position_.x + 100 * cos(-degree * 180 / PI));
   targetY = abs(position_.y + 100 * sin(-degree * 180 / PI));
   if (targetX < 0) {
-    targetX = 0;
+    targetX = frame_boundary;
   }
 
   if (targetX > frame_width - position_.w) {
@@ -121,7 +121,7 @@ void animal::runAway(const animal& seconde) {
   }
 
   if (targetY < 0) {
-    targetY = 0;
+    targetY = frame_boundary;
   }
 
   if (targetY > frame_height - position_.h) {
@@ -234,9 +234,11 @@ wolf::wolf(SDL_Surface* window_surface_ptr)
   this->growingPerPourcent = 100;
 }
 
-void wolf::setTarget(const animal& target) {
-  targetX = target.position_.x;
-  targetY = target.position_.y;
+void wolf::setTarget(std::shared_ptr<animal>& target) {
+  if (speed == 1) {
+    targetX = target->position_.x;
+    targetY = target->position_.y;
+  }
 }
 
 // ---------------- shepherd class impl ----------------
@@ -284,7 +286,8 @@ void shepherd::move(const SDL_Event& event, bool keys[322]) {
 
 // ---------------- shepherd_dog class impl ----------------
 
-shepherd_dog::shepherd_dog(shepherd* master, SDL_Surface* window_surface_ptr)
+shepherd_dog::shepherd_dog(std::shared_ptr<shepherd>& master,
+                           SDL_Surface* window_surface_ptr)
     : animal("./media/shepherd_dog.png", window_surface_ptr) {
   window_surface_ptr_ = window_surface_ptr;
   position_.x = 131;
@@ -341,23 +344,25 @@ void ground::add_animal(std::shared_ptr<animal> newAnimal) {
   animals_.push_back(newAnimal);
 }
 
-void ground::appendOffspring(sheep& first, sheep& second) {
-  if ((first.isFemal && !second.isFemal) ||
-      (!first.isFemal && second.isFemal)) {
+void ground::appendOffspring(const std::shared_ptr<sheep>& first,
+                             const std::shared_ptr<sheep>& second) {
+  if ((first->isFemal && !second->isFemal) ||
+      (!first->isFemal && second->isFemal)) {
     auto child = std::make_shared<sheep>(this->window_surface_ptr_);
     child->isChild();
-    child->position_.x = first.position_.x;
-    child->position_.y = first.position_.y;
+    child->position_.x = first->position_.x;
+    child->position_.y = first->position_.y;
     this->add_animal(child);
-    first.growingPerPourcent++;
-    second.growingPerPourcent++;
+    first->growingPerPourcent++;
+    second->growingPerPourcent++;
   }
 }
 
 void ground::update() {
   // we compare the current animal to the next one and see if an event occur
   // this mean EACH animal is compared to ALL the others ONCE
-  for (auto aniIT = animals_.begin(); aniIT != animals_.end(); ++aniIT) {
+  unsigned cmp = 0;
+  for (auto aniIT = animals_.begin() + cmp; aniIT != animals_.end(); ++aniIT) {
     animal& ani = *aniIT.base()->get();
     ani.update();
     ani.draw();
@@ -370,13 +375,13 @@ void ground::update() {
           if (sqrt(pow(secondeAni.position_.x - ani.position_.x, 2) +
                    pow(secondeAni.position_.y - ani.position_.y, 2) * 1.0) <=
               300) {
-            ((wolf&)ani).setTarget(secondeAni);
+            ((wolf&)ani).setTarget(*secondeIT);
           }
           if (sqrt(pow(secondeAni.position_.x - ani.position_.x, 2) +
                    pow(secondeAni.position_.y - ani.position_.y, 2) * 1.0) <=
               200) {
             secondeAni.setSpeed(2);
-            secondeAni.runAway(ani);
+            secondeAni.runAway(*aniIT);
             if (sqrt(pow(secondeAni.position_.x - ani.position_.x, 2) +
                      pow(secondeAni.position_.y - ani.position_.y, 2) * 1.0) <=
                 secondeAni.position_.w / 2) {
@@ -391,7 +396,7 @@ void ground::update() {
                    pow(secondeAni.position_.y - ani.position_.y, 2) * 1.0) <=
               200) {
             ani.setSpeed(2);
-            ani.runAway(secondeAni);
+            ani.runAway(*secondeIT);
           } else {
             ani.setSpeed(1);
           }
@@ -400,20 +405,21 @@ void ground::update() {
         if (typeid(secondeAni) == typeid(sheep)) {
           if ((ani.growingPerPourcent == max_growing &&
                secondeAni.growingPerPourcent == max_growing) &&
-              ani.isOnCouple(secondeAni)) {
-            appendOffspring((sheep&)ani, (sheep&)secondeAni);
+              ani.isOnCouple(*secondeIT)) {
+            appendOffspring(std::static_pointer_cast<sheep>(*aniIT),
+                            std::static_pointer_cast<sheep>(*secondeIT));
           }
         } else if (typeid(secondeAni) == typeid(wolf)) {
           if (sqrt(pow(secondeAni.position_.x - ani.position_.x, 2) +
                    pow(secondeAni.position_.y - ani.position_.y, 2) * 1.0) <=
               300) {
-            ((wolf&)secondeAni).setTarget(ani);
+            ((wolf&)secondeAni).setTarget(*aniIT);
           }
           if (sqrt(pow(secondeAni.position_.x - ani.position_.x, 2) +
                    pow(secondeAni.position_.y - ani.position_.y, 2) * 1.0) <=
               200) {
             ani.setSpeed(2);
-            ani.runAway(secondeAni);
+            ani.runAway(*secondeIT);
             if (sqrt(pow(secondeAni.position_.x - ani.position_.x, 2) +
                      pow(secondeAni.position_.y - ani.position_.y, 2) * 1.0) <=
                 secondeAni.position_.w / 2) {
@@ -430,13 +436,14 @@ void ground::update() {
                    pow(secondeAni.position_.y - ani.position_.y, 2) * 1.0) <=
               200) {
             secondeAni.setSpeed(2);
-            secondeAni.runAway(ani);
+            secondeAni.runAway(*aniIT);
           } else {
             secondeAni.setSpeed(1);
           }
         }
       }
     }
+    cmp++;
   }
 }
 
@@ -477,10 +484,10 @@ application::~application() {
 
 int application::loop(unsigned period) {
   SDL_Rect windowsRect = SDL_Rect{0, 0, frame_width, frame_height};
-  std::unique_ptr<shepherd> player =
-      std::make_unique<shepherd>(window_surface_ptr_);
+  std::shared_ptr<shepherd> player =
+      std::make_shared<shepherd>(window_surface_ptr_);
   ground_->add_animal(
-      std::make_shared<shepherd_dog>(player.get(), window_surface_ptr_));
+      std::make_shared<shepherd_dog>(player, window_surface_ptr_));
 
   bool keys[322] = {false};
   SDL_UpdateWindowSurface(window_ptr_);
