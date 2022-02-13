@@ -81,6 +81,7 @@ class wolf : public animal {
 public:
   wolf(SDL_Surface* window_surface_ptr);
   ~wolf() {}
+  void setTarget(const animal& target);
   // implement functions that are purely virtual in base class
 };
 
@@ -145,10 +146,10 @@ private:
   SDL_Surface* window_surface_ptr_;
   SDL_Event window_event_;
   SDL_Surface* score_surface_ptr_;
-  SDL_Rect score_position_;
+  SDL_Rect* score_position_;
 
   TTF_Font* font;
-  	
+
   std::unique_ptr<ground> ground_;
 
 public:
