@@ -506,15 +506,17 @@ int application::loop(unsigned period) {
   SDL_UpdateWindowSurface(window_ptr_);
   unsigned nbSheep = 0;
   unsigned secondsPassed = 1;
+  float score = 0;
   SDL_Color color = {0, 0, 0};
   score_surface_ptr_ = TTF_RenderText_Solid(
-      font, std::to_string(nbSheep / secondsPassed).c_str(), color);
+      font, std::to_string(score).c_str(), color);
   score_position_ =
       new SDL_Rect{5, 5, score_surface_ptr_->w, score_surface_ptr_->h};
 
   while (period * 1000 >= SDL_GetTicks()) {
+    score = nbSheep / secondsPassed;
     score_surface_ptr_ = TTF_RenderText_Solid(
-        font, std::to_string(nbSheep / secondsPassed).c_str(), color);
+        font, std::to_string(score).c_str(), color);
     SDL_FillRect(window_surface_ptr_, &windowsRect,
                  SDL_MapRGB(window_surface_ptr_->format, 0, 255, 0));
     SDL_PollEvent(&window_event_);
@@ -537,7 +539,7 @@ int application::loop(unsigned period) {
   TTF_CloseFont(font);
   delete score_position_;
   std::cout << "Your score is : "
-            << std::to_string((float)nbSheep / secondsPassed) << std::endl;
+            << std::to_string(score) << std::endl;
   return 1;
 }
 namespace {
