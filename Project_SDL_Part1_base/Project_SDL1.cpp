@@ -107,9 +107,9 @@ bool animal::isOnCouple(const std::shared_ptr<animal>& secondeAni) {
 
 void animal::setSpeed(int newSpeed) { this->speed = newSpeed; }
 
-void animal::runAway(const std::shared_ptr<animal>& seconde) {
-  auto degree = SDL_atan2(position_.y - seconde->position_.y,
-                          position_.x - seconde->position_.x);
+void animal::runAway(const animal& seconde) {
+  auto degree = SDL_atan2(position_.x - seconde.position_.x,
+                          position_.y - seconde.position_.y);
   targetX = abs(position_.x + 100 * cos(-degree * 180 / PI));
   targetY = abs(position_.y + 100 * sin(-degree * 180 / PI));
   if (targetX < 0) {
@@ -442,7 +442,7 @@ void ground::update() {
                    pow(secondeAni->position_.y - ani->position_.y, 2) * 1.0) <=
               200) {
             secondeAni->setSpeed(2);
-            secondeAni->runAway(*aniIT);
+            secondeAni->runAway(*aniIT.base()->get());
             if (sqrt(pow(secondeAni->position_.x - ani->position_.x, 2) +
                      pow(secondeAni->position_.y - ani->position_.y, 2) *
                          1.0) <= secondeAni->position_.w / 2) {
@@ -458,7 +458,7 @@ void ground::update() {
                    pow(secondeAni->position_.y - ani->position_.y, 2) * 1.0) <=
               200) {
             ani->setSpeed(2);
-            ani->runAway(*secondeIT);
+            ani->runAway(*secondeIT.base()->get());
           } else {
             ani->setSpeed(1);
           }
@@ -481,7 +481,7 @@ void ground::update() {
                    pow(secondeAni->position_.y - ani->position_.y, 2) * 1.0) <=
               200) {
             ani->setSpeed(2);
-            ani->runAway(*secondeIT);
+            ani->runAway(*secondeIT.base()->get());
             if (sqrt(pow(secondeAni->position_.x - ani->position_.x, 2) +
                      pow(secondeAni->position_.y - ani->position_.y, 2) *
                          1.0) <= secondeAni->position_.w / 2) {
@@ -499,7 +499,7 @@ void ground::update() {
                    pow(secondeAni->position_.y - ani->position_.y, 2) * 1.0) <=
               200) {
             secondeAni->setSpeed(2);
-            secondeAni->runAway(*aniIT);
+            secondeAni->runAway(*aniIT.base()->get());
           } else {
             secondeAni->setSpeed(1);
           }
