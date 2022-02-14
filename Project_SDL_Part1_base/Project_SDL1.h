@@ -54,7 +54,7 @@ public:
   bool isOnCouple(const std::shared_ptr<animal>&);
   void draw();
   void setSpeed(int newSpeed);
-  void runAway(const animal&);
+  void runAway(const std::shared_ptr<animal>&);
 
   virtual void move();
   virtual void update();
